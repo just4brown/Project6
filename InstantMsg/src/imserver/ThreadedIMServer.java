@@ -1,8 +1,6 @@
 package imserver;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 
@@ -31,9 +29,34 @@ public class ThreadedIMServer
     ServerConnectionThread thisThread = (ServerConnectionThread) Thread.
         currentThread();
     Socket thisSocket = thisThread.getSocket();
-    BufferedReader in;
-    PrintWriter out;
+    
+    try {
+        
+        PrintWriter out = new PrintWriter
+           (new PrintWriter(thisSocket.getOutputStream(), true));
+        out.println("Hello from your server");
+        InputStream clientIn = thisSocket.getInputStream();
+        BufferedReader bin = new BufferedReader(new InputStreamReader(clientIn));
+        
+        // Get Username & Password (should be sent in succession)
+        String username = bin.readLine();
+        String password = bin.readLine();
+        
+        // Check hashmap for username password combo
+        
+        // Send back 
+        
+        
+        
+    } catch (IOException e) {
+        
+    }   
+           
+           
     String user = null;
+    
+     
+    
 
      /**********************
 	a bunch of code deleted; this is where

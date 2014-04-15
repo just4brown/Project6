@@ -6,6 +6,13 @@
 
 package imserver;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.Socket;
+
 /**
  *
  * @author Lindsey
@@ -16,8 +23,7 @@ public class Chat extends javax.swing.JFrame {
      * Creates new form ChatBox
      */
     public Chat() {
-        initComponents();
-        
+        initComponents();        
     }
 
     /**
@@ -46,6 +52,7 @@ public class Chat extends javax.swing.JFrame {
         password = new javax.swing.JPasswordField();
         createNewUser = new javax.swing.JButton();
         login = new javax.swing.JButton();
+        status = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -226,6 +233,8 @@ public class Chat extends javax.swing.JFrame {
         loginPanel.setLayer(createNewUser, javax.swing.JLayeredPane.DEFAULT_LAYER);
         loginPanel.setLayer(login, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
+        status.setText("Welcome");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -237,6 +246,10 @@ public class Chat extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(20, 20, 20))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(95, 95, 95)
+                .addComponent(status)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -244,7 +257,9 @@ public class Chat extends javax.swing.JFrame {
                 .addComponent(closeChat)
                 .addGap(18, 18, 18)
                 .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addComponent(status)
+                .addContainerGap())
         );
 
         pack();
@@ -320,9 +335,18 @@ public class Chat extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Chat().setVisible(true);
+                Chat thisChat = new Chat();
+                thisChat.setVisible(true);
+                
+                ClientConnectionWorker c = new ClientConnectionWorker(4225);
+                c.execute();
+                
+                // Now use this ClientConnectionWoker thread to handle all listening activities
+               
             }
         });
+        
+                
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -340,6 +364,7 @@ public class Chat extends javax.swing.JFrame {
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JLabel passwordLabel1;
     private javax.swing.JLabel passwordLabel2;
+    private javax.swing.JLabel status;
     private javax.swing.JTextField username;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JLabel usernameLabel1;
