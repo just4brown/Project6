@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package imserver;
 
 import java.io.BufferedReader;
@@ -13,6 +12,14 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,11 +27,81 @@ import javax.swing.JOptionPane;
  */
 public class Chat extends javax.swing.JFrame {
 
+    private Connection connect = null;
+    private Statement statement = null;
+    private PreparedStatement preparedStatement = null;
+    private ResultSet resultSet = null;
+
     /**
      * Creates new form ChatBox
      */
     public Chat() {
-        initComponents();        
+        initComponents();
+    }
+
+    public Boolean logUserIn(String name, String pw) throws Exception {
+        Boolean userLoggedIn = false;
+        try {
+             
+            // this will load the MySQL driver, each DB has its own driver
+            Class.forName("com.mysql.jdbc.Driver");
+            // setup the connection with the DB.
+            connect = DriverManager
+                    .getConnection("jdbc:mysql://john.cedarville.edu:3306/cs4220?"
+                            + "user=cs4220&password=");
+            statement = connect.createStatement();
+            // resultSet gets the result of the SQL query
+            resultSet = statement
+                    .executeQuery("select name,pw from JLChatUsers where name='"+name+"'");
+            resultSet.next();
+            String pwCheck = resultSet.getString("pw");
+            if(pwCheck==null){
+                userLoggedIn = false;
+            }
+            else{
+                if(pwCheck.toString().equals(pw)){
+                    userLoggedIn = true;
+                }
+                else{
+                    userLoggedIn = false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally{
+            return userLoggedIn;
+        }
+    }
+    
+    public Boolean logNewUser(String name, String pw) throws Exception {
+        Boolean userExists = false;
+        try {
+             
+            // this will load the MySQL driver, each DB has its own driver
+            Class.forName("com.mysql.jdbc.Driver");
+            // setup the connection with the DB.
+            connect = DriverManager
+                    .getConnection("jdbc:mysql://john.cedarville.edu:3306/cs4220?"
+                            + "user=cs4220&password=");
+            statement = connect.createStatement();
+            resultSet = statement
+                    .executeQuery("select name from JLChatUsers where name='"+name+"'");
+            if(resultSet.next()){
+                userExists = true;
+            }
+            else{
+                userExists = false;
+                statement = connect.createStatement();
+                statement.executeUpdate("insert into JLChatUsers values('"+name+"','"+pw+"')");
+            }
+                       
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally{
+            return userExists;
+        }
     }
 
     /**
@@ -86,9 +163,9 @@ public class Chat extends javax.swing.JFrame {
 
         jButton1.setText("Create New Account");
         jButton1.setName("createNewAccount"); // NOI18N
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                newUserAccountMouseClicked(evt);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createNewAccountAction(evt);
             }
         });
 
@@ -262,66 +339,61 @@ public class Chat extends javax.swing.JFrame {
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         String un = username.getText();
         String pw = password.getText();
-        
-            //Username doesn't exist
-            if(!ThreadedIMServer.users.containsKey(un)){
-                JOptionPane.showMessageDialog(this, "This username does not exist.",
-                "Username error",JOptionPane.ERROR_MESSAGE);
+        try {
+            //Username logged in
+            if (logUserIn(un,pw)) {
+                JOptionPane.showMessageDialog(this, "You're logged in!",
+                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
+                loginPanel.hide();
+            } //Username exists
+            else {
+                //Password is wrong or username doesn't exist
+                    JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
             }
-            //Username exists
-            else{
-                //Password is wrong
-                if(!pw.equals(ThreadedIMServer.users.get(un))){
-                    JOptionPane.showMessageDialog(this, "This password is incorrect.",
-                    "Password error",JOptionPane.ERROR_MESSAGE);
-                }
-                else{
-                    //user logged in
-                    loginPanel.hide();
-                }
-            }
-    }//GEN-LAST:event_loginActionPerformed
-
-    private void newUserAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newUserAccountMouseClicked
-        //Username already exists
-        String username = null;
-        String password1 = null;
-        String password2 = null;
-        if(ThreadedIMServer.users.containsKey(newUsername)){
-            JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
-                "Username error",JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //Username is good
-        else{
-            username = newUsername.getText();
-            password1 = newPassword1.getText();
-            password2 = newPassword2.getText();
-            //Passwords don't match
-            if(!(password1.equals(password2))){
-                JOptionPane.showMessageDialog(createNewUserBox, "Passwords must match.",
-                "Password error",JOptionPane.ERROR_MESSAGE);
-            }
-            //Username and passwords are good to be created
-            else{
-                //username = key, pw = value
-                ThreadedIMServer.users.put(username, password1);
-                JOptionPane.showMessageDialog(createNewUserBox, "New User Created!",
-                "Success",JOptionPane.INFORMATION_MESSAGE);
-                createNewUserBox.hide();
-            }
-       }
-    }//GEN-LAST:event_newUserAccountMouseClicked
+    }//GEN-LAST:event_loginActionPerformed
 
     private void closeChat(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeChat
         int result = JOptionPane.showConfirmDialog(
-            this,
-            "Are you sure you want to exit the application?",
-            "Exit Application",
-            JOptionPane.YES_NO_OPTION);
+                this,
+                "Are you sure you want to exit the application?",
+                "Exit Application",
+                JOptionPane.YES_NO_OPTION);
 
-        if (result == JOptionPane.YES_OPTION)
+        if (result == JOptionPane.YES_OPTION) {
             this.dispose();
+        }
     }//GEN-LAST:event_closeChat
+
+    private void createNewAccountAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewAccountAction
+        //Username already exists
+        String un = newUsername.getText();
+        String password1  = newPassword1.getText();
+        String password2 = newPassword2.getText();
+        try {
+            //Password mismatch
+            if (!(password1.equals(password2))) {
+                JOptionPane.showMessageDialog(createNewUserBox, "Passwords must match.",
+                        "Password error", JOptionPane.ERROR_MESSAGE);
+            } //Username and passwords are good to be created
+            else {
+                if(logNewUser(un,password1)){
+                    JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
+                    "Username error", JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "You're logged in!",
+                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
+                    createNewUserBox.hide();
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_createNewAccountAction
 
     /**
      * @param args the command line arguments
@@ -355,16 +427,14 @@ public class Chat extends javax.swing.JFrame {
             public void run() {
                 Chat thisChat = new Chat();
                 thisChat.setVisible(true);
-                
+
                 ClientConnectionWorker c = new ClientConnectionWorker(4225);
                 c.execute();
-                
+
                 // Now use this ClientConnectionWoker thread to handle all listening activities
-               
             }
         });
-        
-                
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
