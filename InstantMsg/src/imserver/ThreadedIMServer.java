@@ -2,10 +2,12 @@ package imserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Hashtable;
 
 
 public class ThreadedIMServer
     extends BasicServer implements Runnable {
+    public static final Hashtable users = new Hashtable();
 
 
   public ThreadedIMServer() {

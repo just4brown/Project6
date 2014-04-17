@@ -2,6 +2,7 @@ package imserver;
 
 import java.io.*;
 import java.net.*;
+import java.util.Hashtable;
 
 public class BasicServer {
 

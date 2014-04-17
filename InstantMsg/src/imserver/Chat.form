@@ -29,23 +29,23 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="passwordLabel2" min="-2" max="-2" attributes="0"/>
                               <Component id="newPassword2" min="-2" max="-2" attributes="0"/>
                               <Component id="passwordLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="newPassword1" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="usernameLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="newUsername" alignment="0" min="-2" pref="112" max="-2" attributes="0"/>
+                              <Component id="passwordLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="newPassword1" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="102" max="-2" attributes="0"/>
-                          <Component id="createNewAccount" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="165" max="32767" attributes="0"/>
+                  <EmptySpace pref="55" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -64,9 +64,9 @@
                   <Component id="passwordLabel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="newPassword2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-                  <Component id="createNewAccount" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="58" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="49" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -87,9 +87,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="New Username"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newUsernamenone"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="passwordLabel1">
           <Properties>
@@ -103,9 +100,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="jPasswordField1"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newPassword1ActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JPasswordField" name="newPassword2">
           <Properties>
@@ -120,16 +114,13 @@
             <Property name="text" type="java.lang.String" value=" Re-Enter Password"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="createNewAccount">
+        <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Calibri" size="12" style="2"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Create New Account"/>
+            <Property name="name" type="java.lang.String" value="createNewAccount" noResource="true"/>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="createNewAccountMouseClicked"/>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createNewAccountActionPerformed"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="newUserAccountMouseClicked"/>
           </Events>
         </Component>
       </SubComponents>
@@ -138,6 +129,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="chatWindow"/>
+    <Property name="name" type="java.lang.String" value="chatWindow" noResource="true"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -193,6 +185,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="X"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeChat"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JLayeredPane" name="loginPanel">
 
@@ -251,9 +246,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Enter Username"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="none"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="passwordLabel">
           <Properties>
@@ -277,7 +269,6 @@
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="createNewUserMouseClicked"/>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createNewUserActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="login">

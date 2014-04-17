@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,7 +44,7 @@ public class Chat extends javax.swing.JFrame {
         newPassword1 = new javax.swing.JPasswordField();
         newPassword2 = new javax.swing.JPasswordField();
         passwordLabel2 = new javax.swing.JLabel();
-        createNewAccount = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         closeChat = new javax.swing.JButton();
         loginPanel = new javax.swing.JLayeredPane();
         usernameLabel = new javax.swing.JLabel();
@@ -72,37 +73,22 @@ public class Chat extends javax.swing.JFrame {
 
         newUsername.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
         newUsername.setText("New Username");
-        newUsername.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newUsernamenone(evt);
-            }
-        });
 
         passwordLabel1.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
         passwordLabel1.setText(" Password");
 
         newPassword1.setText("jPasswordField1");
-        newPassword1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newPassword1ActionPerformed(evt);
-            }
-        });
 
         newPassword2.setText("jPasswordField1");
 
         passwordLabel2.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
         passwordLabel2.setText(" Re-Enter Password");
 
-        createNewAccount.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
-        createNewAccount.setText("Create New Account");
-        createNewAccount.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton1.setText("Create New Account");
+        jButton1.setName("createNewAccount"); // NOI18N
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                createNewAccountMouseClicked(evt);
-            }
-        });
-        createNewAccount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createNewAccountActionPerformed(evt);
+                newUserAccountMouseClicked(evt);
             }
         });
 
@@ -115,16 +101,16 @@ public class Chat extends javax.swing.JFrame {
                     .addGroup(createNewUserBoxLayout.createSequentialGroup()
                         .addGap(46, 46, 46)
                         .addGroup(createNewUserBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(passwordLabel2)
                             .addComponent(newPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(passwordLabel1)
-                            .addComponent(newPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(usernameLabel1)
-                            .addComponent(newUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(newUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passwordLabel2)
+                            .addComponent(newPassword1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(createNewUserBoxLayout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addComponent(createNewAccount)))
-                .addContainerGap(165, Short.MAX_VALUE))
+                        .addGap(38, 38, 38)
+                        .addComponent(jButton1)))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         createNewUserBoxLayout.setVerticalGroup(
             createNewUserBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,26 +127,27 @@ public class Chat extends javax.swing.JFrame {
                 .addComponent(passwordLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(newPassword2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(createNewAccount)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addComponent(jButton1)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("chatWindow");
+        setName("chatWindow"); // NOI18N
 
         closeChat.setText("X");
+        closeChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeChat(evt);
+            }
+        });
 
         usernameLabel.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
         usernameLabel.setText(" Username");
 
         username.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
         username.setText("Enter Username");
-        username.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                none(evt);
-            }
-        });
 
         passwordLabel.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
         passwordLabel.setText(" Password");
@@ -172,11 +159,6 @@ public class Chat extends javax.swing.JFrame {
         createNewUser.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 createNewUserMouseClicked(evt);
-            }
-        });
-        createNewUser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                createNewUserActionPerformed(evt);
             }
         });
 
@@ -265,10 +247,6 @@ public class Chat extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void none(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_none
-        // TODO add your handling code here:
-    }//GEN-LAST:event_none
-
     private void loginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_loginMouseClicked
@@ -282,28 +260,68 @@ public class Chat extends javax.swing.JFrame {
     }//GEN-LAST:event_createNewUserMouseClicked
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        // TODO add your handling code here:
+        String un = username.getText();
+        String pw = password.getText();
+        
+            //Username doesn't exist
+            if(!ThreadedIMServer.users.containsKey(un)){
+                JOptionPane.showMessageDialog(this, "This username does not exist.",
+                "Username error",JOptionPane.ERROR_MESSAGE);
+            }
+            //Username exists
+            else{
+                //Password is wrong
+                if(!pw.equals(ThreadedIMServer.users.get(un))){
+                    JOptionPane.showMessageDialog(this, "This password is incorrect.",
+                    "Password error",JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    //user logged in
+                    loginPanel.hide();
+                }
+            }
     }//GEN-LAST:event_loginActionPerformed
 
-    private void newUsernamenone(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newUsernamenone
-        // TODO add your handling code here:
-    }//GEN-LAST:event_newUsernamenone
+    private void newUserAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newUserAccountMouseClicked
+        //Username already exists
+        String username = null;
+        String password1 = null;
+        String password2 = null;
+        if(ThreadedIMServer.users.containsKey(newUsername)){
+            JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
+                "Username error",JOptionPane.ERROR_MESSAGE);
+        }
+        //Username is good
+        else{
+            username = newUsername.getText();
+            password1 = newPassword1.getText();
+            password2 = newPassword2.getText();
+            //Passwords don't match
+            if(!(password1.equals(password2))){
+                JOptionPane.showMessageDialog(createNewUserBox, "Passwords must match.",
+                "Password error",JOptionPane.ERROR_MESSAGE);
+            }
+            //Username and passwords are good to be created
+            else{
+                //username = key, pw = value
+                ThreadedIMServer.users.put(username, password1);
+                JOptionPane.showMessageDialog(createNewUserBox, "New User Created!",
+                "Success",JOptionPane.INFORMATION_MESSAGE);
+                createNewUserBox.hide();
+            }
+       }
+    }//GEN-LAST:event_newUserAccountMouseClicked
 
-    private void createNewUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewUserActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_createNewUserActionPerformed
+    private void closeChat(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeChat
+        int result = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to exit the application?",
+            "Exit Application",
+            JOptionPane.YES_NO_OPTION);
 
-    private void createNewAccountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewAccountMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_createNewAccountMouseClicked
-
-    private void createNewAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewAccountActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_createNewAccountActionPerformed
-
-    private void newPassword1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPassword1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_newPassword1ActionPerformed
+        if (result == JOptionPane.YES_OPTION)
+            this.dispose();
+    }//GEN-LAST:event_closeChat
 
     /**
      * @param args the command line arguments
@@ -351,9 +369,9 @@ public class Chat extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeChat;
-    private javax.swing.JButton createNewAccount;
     private javax.swing.JButton createNewUser;
     private javax.swing.JFrame createNewUserBox;
+    private javax.swing.JButton jButton1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JButton login;
     private javax.swing.JLayeredPane loginPanel;
