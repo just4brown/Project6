@@ -7,7 +7,9 @@ import java.util.Hashtable;
 
 public class ThreadedIMServer
     extends BasicServer implements Runnable {
+    //key = username, value = int port
     public static final Hashtable users = new Hashtable();
+    int userPort = 4221;
 
 
   public ThreadedIMServer() {
@@ -23,7 +25,7 @@ public class ThreadedIMServer
 
   protected void serviceConnection(Socket connection) throws IOException {
     ServerConnectionThread connectThread = new ServerConnectionThread(this,
-        connection);
+         connection);
     connectThread.start();
   }
 
@@ -45,13 +47,16 @@ public class ThreadedIMServer
         String password = bin.readLine();
         
         // Check hashmap for username password combo
-        
+        if(!users.containsKey(username)){
+            users.put(username, userPort);
+            userPort++;
+        }
         // Send back 
-        
+        out.println(6 + " " + username);
         
         
     } catch (IOException e) {
-        
+        e.printStackTrace();
     }   
            
            

@@ -21,6 +21,7 @@ public class ClientConnectionWorker extends SwingWorker<String, String> {
     
     Socket sock;
     int port;
+    ClientGUI cg;
     
     public ClientConnectionWorker (int p) {
         port = p;
