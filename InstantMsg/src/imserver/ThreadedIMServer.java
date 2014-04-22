@@ -53,7 +53,7 @@ public class ThreadedIMServer
         while(true) {
             try {
                 msg = (String) sInput.readObject();
-                String response = parseMessage();
+                String response = parseMessage(msg);
                 os.writeObject(response);
             } catch (Exception ex) {
                 Logger.getLogger(ThreadedIMServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,14 +69,7 @@ public class ThreadedIMServer
            
     String user = null;
     
-     
-    
 
-     /**********************
-	a bunch of code deleted; this is where
-	you handle the handshake with the client, and then
-	put your readline busy wait
-	**************************/
   }
   
   public String parseMessage(String msg) {

@@ -30,38 +30,23 @@ public class Chat extends javax.swing.JFrame {
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
     public boolean succesfulConn;
-<<<<<<< HEAD
+
     public String inbox;
     public String outbox;
     ObjectInputStream is;
     Socket IMServer;// = new Socket(InetAddress.getByName("localhost"), 4225);
     ObjectOutputStream os; //= new ObjectOutputStream(IMServer.getOutputStream());
-    
 
-=======
     public String msg;
     public ThreadedIMServer server;
     Socket serverSocket;
     ObjectInputStream readServer;
     ObjectOutputStream writeServer;
     
->>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
     /**
      * Creates new form ChatBox
      */
     public Chat() {
-<<<<<<< HEAD
-        try {
-            initComponents();
-            IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
-            os = new ObjectOutputStream(IMServer.getOutputStream());
-            is = new ObjectInputStream(IMServer.getInputStream());
-        } catch (Exception ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
-=======
         initComponents();
         server = new ThreadedIMServer();
         try {
@@ -73,7 +58,6 @@ public class Chat extends javax.swing.JFrame {
         }
         
    }
->>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
 
     public Boolean logUserIn(String name, String pw) throws Exception {
         Boolean userLoggedIn = false;
@@ -482,25 +466,6 @@ public class Chat extends javax.swing.JFrame {
         Chat c = new Chat();
         c.startClient();
         c.initializeConnection();
-<<<<<<< HEAD
-        //c.login
-        //c.getBuddies
-        
-        
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                Chat thisChat = new Chat();
-//                thisChat.setVisible(true);
-//                //new ListenFromServer().start();
-//                //ClientConnectionWorker c = new ClientConnectionWorker(4225);
-//                //c.execute();
-//
-//                // Now use this ClientConnectionWoker thread to handle all listening activities
-//            }
-//        });
-=======
-
->>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
 
     }
     
@@ -510,7 +475,6 @@ public class Chat extends javax.swing.JFrame {
             //while(true) {
                 try {
                     
-<<<<<<< HEAD
                     inbox = (String) is.readObject();
                     //msg = line;
                     status.setText(inbox);
@@ -530,13 +494,12 @@ public class Chat extends javax.swing.JFrame {
                 try {                    
                     
                     os.writeObject(outbox);
-=======
+
                     Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
                     ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
 
                     String msg = (String) sInput.readObject();
                     status.setText(msg);
->>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
 
         //            Send login info to server from here
         //            Recall:
