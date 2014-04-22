@@ -55,10 +55,13 @@ public class ThreadedIMServer
         InputStream clientIn = thisSocket.getInputStream();
         BufferedReader bin = new BufferedReader(new InputStreamReader(clientIn));
         ObjectOutputStream os = new ObjectOutputStream(thisSocket.getOutputStream());
-        os.writeObject("Connected 1to Server!!");
         ObjectInputStream sInput  = new ObjectInputStream(thisSocket.getInputStream());
+
+        os.writeObject("Connected 1to Server!!");        
+        
         // Get Username & Password (should be sent in succession)
         String msg = null;
+        
         while(true) {
             try {
                 msg = (String) sInput.readObject();
@@ -91,16 +94,15 @@ public class ThreadedIMServer
               break;
           case 1: // Log on              
               String pw = s[2];
-              if(logUserIn(un,pw)) {
+              if(logUserIn(un,pw)) {                  
+                  notifyBuddies(un, "on");
                   usersOn.put(un, os);
-                  notifyBuddies(un, "on");                  
                   return ("6 " + un);
               }
               else {
                   return ("7 " + un);
-              }
-             
-              break;
+              }            
+              
           case 2: // Log off
                // notifyBuddies(un, "off");
               // usersOn.remove(un);

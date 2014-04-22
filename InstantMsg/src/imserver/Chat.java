@@ -32,21 +32,23 @@ public class Chat extends javax.swing.JFrame {
     ObjectOutputStream os; //= new ObjectOutputStream(IMServer.getOutputStream());
 
     public String msg;
-    public ThreadedIMServer server;
-    Socket serverSocket;
-    ObjectInputStream readServer;
-    ObjectOutputStream writeServer;
+//    public ThreadedIMServer server;
+//    Socket serverSocket;
+//    ObjectInputStream readServer;
+//    ObjectOutputStream writeServer;
     
     /**
      * Creates new form ChatBox
      */
     public Chat() {
         initComponents();
-        server = new ThreadedIMServer();
+        
+        // Problem: Client won't start if Socket connection fails
+        
         try {
-            serverSocket = new Socket(InetAddress.getByName("163.11.2.127"), 4225);
-            readServer  = new ObjectInputStream(serverSocket.getInputStream());
-            writeServer  = new ObjectOutputStream(serverSocket.getOutputStream());
+            IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
+            is  = new ObjectInputStream(IMServer.getInputStream());
+            os  = new ObjectOutputStream(IMServer.getOutputStream());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -298,7 +300,7 @@ public class Chat extends javax.swing.JFrame {
        //Format:  1 USERNAME PASSWORD
         try {
             //Username logged in
-            if (inbox.equals("6")) {
+            if (inbox.equals("6 " + un)) {
                 JOptionPane.showMessageDialog(this, "You're logged in!",
                         "Logged In", JOptionPane.INFORMATION_MESSAGE);
                 loginPanel.hide();
@@ -339,15 +341,19 @@ public class Chat extends javax.swing.JFrame {
                         "Password error", JOptionPane.ERROR_MESSAGE);
             } //Username and passwords are good to be created
             else {
-                if(logNewUser(un,password1)){
-                    JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
-                    "Username error", JOptionPane.ERROR_MESSAGE);
-                }
-                else{
-                    JOptionPane.showMessageDialog(this, "You're logged in!",
-                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
-                    createNewUserBox.hide();
-                }
+                outbox = "0 " + un + " " + password1;
+                new sendToServer().start();
+                
+                //if(logNewUser(un,password1)){
+                    //JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
+                    //"Username error", JOptionPane.ERROR_MESSAGE);
+                //}
+                //else{
+                
+//                    JOptionPane.showMessageDialog(this, "You're logged in!",
+//                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
+//                    createNewUserBox.hide();
+                //}
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -425,11 +431,11 @@ public class Chat extends javax.swing.JFrame {
                     
                     os.writeObject(outbox);
 
-                    Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
-                    ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
+                    //Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
+                    //ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
 
-                    String msg = (String) sInput.readObject();
-                    status.setText(msg);
+                    //String msg = (String) sInput.readObject();
+                    //status.setText(msg);
 
         //            Send login info to server from here
         //            Recall:
