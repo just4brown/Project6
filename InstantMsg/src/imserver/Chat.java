@@ -40,19 +40,18 @@ public class Chat extends javax.swing.JFrame {
     public String msg;
     public ThreadedIMServer server;
     Socket serverSocket;
-    ObjectInputStream readServer;
-    ObjectOutputStream writeServer;
+
     
     /**
      * Creates new form ChatBox
      */
     public Chat() {
         initComponents();
-        server = new ThreadedIMServer();
+        buddyListPane.hide();
         try {
             serverSocket = new Socket(InetAddress.getByName("163.11.2.127"), 4225);
-            readServer  = new ObjectInputStream(serverSocket.getInputStream());
-            writeServer  = new ObjectOutputStream(serverSocket.getOutputStream());
+            is  = new ObjectInputStream(serverSocket.getInputStream());
+            os  = new ObjectOutputStream(serverSocket.getOutputStream());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -81,7 +80,7 @@ public class Chat extends javax.swing.JFrame {
             else{
                 if(pwCheck.toString().equals(pw)){
                     userLoggedIn = true;
-                    writeServer.writeBytes(pw);
+                    os.writeBytes(pw);
                 }
                 else{
                     userLoggedIn = false;
@@ -134,7 +133,10 @@ public class Chat extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDialog1 = new javax.swing.JDialog();
+        DialogBox = new javax.swing.JDialog();
+        messageFeed = new javax.swing.JScrollPane();
+        textBox = new javax.swing.JTextField();
+        sendButton = new javax.swing.JButton();
         createNewUserBox = new javax.swing.JFrame();
         usernameLabel1 = new javax.swing.JLabel();
         newUsername = new javax.swing.JTextField();
@@ -152,16 +154,45 @@ public class Chat extends javax.swing.JFrame {
         createNewUser = new javax.swing.JButton();
         login = new javax.swing.JButton();
         status = new javax.swing.JLabel();
+        buddyListPane = new javax.swing.JLayeredPane();
+        buddyList = new javax.swing.JScrollPane();
+        list = new javax.swing.JList();
 
-        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
-        jDialog1.getContentPane().setLayout(jDialog1Layout);
-        jDialog1Layout.setHorizontalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+        messageFeed.setBackground(new java.awt.Color(102, 255, 153));
+
+        textBox.setText("Enter Text");
+
+        sendButton.setText("SEND");
+        sendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendMessage(evt);
+            }
+        });
+
+        javax.swing.GroupLayout DialogBoxLayout = new javax.swing.GroupLayout(DialogBox.getContentPane());
+        DialogBox.getContentPane().setLayout(DialogBoxLayout);
+        DialogBoxLayout.setHorizontalGroup(
+            DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DialogBoxLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(messageFeed)
+                    .addGroup(DialogBoxLayout.createSequentialGroup()
+                        .addComponent(textBox, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)))
+                .addContainerGap())
         );
-        jDialog1Layout.setVerticalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        DialogBoxLayout.setVerticalGroup(
+            DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DialogBoxLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(messageFeed, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textBox)
+                    .addComponent(sendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         createNewUserBox.setMinimumSize(new java.awt.Dimension(300, 350));
@@ -262,11 +293,6 @@ public class Chat extends javax.swing.JFrame {
 
         login.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
         login.setText("Login");
-        login.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                loginMouseClicked(evt);
-            }
-        });
         login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loginActionPerformed(evt);
@@ -287,7 +313,7 @@ public class Chat extends javax.swing.JFrame {
                         .addComponent(passwordLabel)
                         .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(createNewUser)))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,7 +328,7 @@ public class Chat extends javax.swing.JFrame {
                 .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(login)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
                 .addComponent(createNewUser)
                 .addGap(48, 48, 48))
         );
@@ -314,41 +340,75 @@ public class Chat extends javax.swing.JFrame {
         loginPanel.setLayer(login, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         status.setText("Welcome");
+        status.setAutoscrolls(true);
+        status.setOpaque(true);
+        status.setRequestFocusEnabled(false);
+        status.setVerifyInputWhenFocusTarget(false);
+
+        list.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Buddy 1", "Buddy 2", "Buddy 3", "Buddy 4", "Buddy 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        buddyList.setViewportView(list);
+
+        javax.swing.GroupLayout buddyListPaneLayout = new javax.swing.GroupLayout(buddyListPane);
+        buddyListPane.setLayout(buddyListPaneLayout);
+        buddyListPaneLayout.setHorizontalGroup(
+            buddyListPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 205, Short.MAX_VALUE)
+            .addGroup(buddyListPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(buddyList, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
+        );
+        buddyListPaneLayout.setVerticalGroup(
+            buddyListPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 324, Short.MAX_VALUE)
+            .addGroup(buddyListPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(buddyList, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
+        );
+        buddyListPane.setLayer(buddyList, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(95, 95, 95)
+                .addComponent(status)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(closeChat, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(status)
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(18, 18, 18))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(20, Short.MAX_VALUE)
+                    .addComponent(buddyListPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(closeChat)
                 .addGap(18, 18, 18)
-                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addComponent(loginPanel)
+                .addGap(18, 18, 18)
                 .addComponent(status)
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(31, 31, 31)
+                    .addComponent(buddyListPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(43, Short.MAX_VALUE)))
         );
+
+        status.getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void loginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseClicked
-        // TODO add your handling code here:
-        status.setText("Button pressed");
-    }//GEN-LAST:event_loginMouseClicked
 
     private void createNewUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewUserMouseClicked
         //Close login screen
@@ -367,11 +427,14 @@ public class Chat extends javax.swing.JFrame {
         
        //Format:  1 USERNAME PASSWORD
         try {
+            Boolean loggedin = logUserIn(un,pw);
             //Username logged in
-            if (inbox.equals("6")) {
+            //if (inbox.equals("6")) {
+            if(loggedin){
                 JOptionPane.showMessageDialog(this, "You're logged in!",
                         "Logged In", JOptionPane.INFORMATION_MESSAGE);
                 loginPanel.hide();
+                buddyListPane.show();
             } //Username exists
             else {
                 //Password is wrong or username doesn't exist
@@ -423,6 +486,10 @@ public class Chat extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_createNewAccountAction
+
+    private void sendMessage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMessage
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sendMessage
 
     public void startClient() {
         this.setVisible(true);        
@@ -517,13 +584,17 @@ public class Chat extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog DialogBox;
+    private javax.swing.JScrollPane buddyList;
+    private javax.swing.JLayeredPane buddyListPane;
     private javax.swing.JButton closeChat;
     private javax.swing.JButton createNewUser;
     private javax.swing.JFrame createNewUserBox;
     private javax.swing.JButton jButton1;
-    private javax.swing.JDialog jDialog1;
+    private javax.swing.JList list;
     private javax.swing.JButton login;
     private javax.swing.JLayeredPane loginPanel;
+    private javax.swing.JScrollPane messageFeed;
     private javax.swing.JPasswordField newPassword1;
     private javax.swing.JPasswordField newPassword2;
     private javax.swing.JTextField newUsername;
@@ -531,7 +602,9 @@ public class Chat extends javax.swing.JFrame {
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JLabel passwordLabel1;
     private javax.swing.JLabel passwordLabel2;
+    private javax.swing.JButton sendButton;
     private javax.swing.JLabel status;
+    private javax.swing.JTextField textBox;
     private javax.swing.JTextField username;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JLabel usernameLabel1;
