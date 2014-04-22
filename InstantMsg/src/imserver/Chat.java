@@ -414,47 +414,23 @@ public class Chat extends javax.swing.JFrame {
     class ListenFromServer extends Thread {
         
         public void run() {
-            //while(true) {
                 try {
-                    
                     inbox = (String) is.readObject();
-                    //msg = line;
                     status.setText(inbox);
-
-     
                 } catch (Exception ioe) {
                     System.err.println(ioe);
                 }
-            //}
         }
     }
     
     class sendToServer extends Thread {
         
         public void run() {
-            //while(true) {
                 try {                    
-                    
                     os.writeObject(outbox);
-
-                    //Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
-                    //ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
-
-                    //String msg = (String) sInput.readObject();
-                    //status.setText(msg);
-
-        //            Send login info to server from here
-        //            Recall:
-        //            1  - LOGON 
-        //            From client to server
-        //            Format:  1 USERNAME PASSWORD
-        //            Example: 1 mzimmerm qaz123
-
-
                 } catch (Exception ioe) {
                     System.err.println(ioe);
                 }
-            //}
         }
     }
 
