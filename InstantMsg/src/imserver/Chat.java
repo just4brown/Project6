@@ -296,6 +296,12 @@ public class Chat extends javax.swing.JFrame {
         outbox = "1 "+ un + " " + pw;
         new sendToServer().start();
         new ListenFromServer().start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         
        //Format:  1 USERNAME PASSWORD
         try {
@@ -401,7 +407,7 @@ public class Chat extends javax.swing.JFrame {
         /* Create and display the form */
         Chat c = new Chat();
         c.startClient();
-        c.initializeConnection();
+        //c.initializeConnection();
 
     }
     

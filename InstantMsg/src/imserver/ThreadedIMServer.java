@@ -51,13 +51,13 @@ public class ThreadedIMServer
         
         PrintWriter out = new PrintWriter
            (new PrintWriter(thisSocket.getOutputStream(), true));
-        out.println("Hello from your server");
+        //out.println("Hello from your server");
         InputStream clientIn = thisSocket.getInputStream();
         BufferedReader bin = new BufferedReader(new InputStreamReader(clientIn));
         ObjectOutputStream os = new ObjectOutputStream(thisSocket.getOutputStream());
         ObjectInputStream sInput  = new ObjectInputStream(thisSocket.getInputStream());
 
-        os.writeObject("Connected 1to Server!!");        
+        //os.writeObject("Connected 1to Server!!");        
         
         // Get Username & Password (should be sent in succession)
         String msg = null;
