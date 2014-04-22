@@ -3,6 +3,8 @@ package imserver;
 import java.io.*;
 import java.net.Socket;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ThreadedIMServer
@@ -42,20 +44,21 @@ public class ThreadedIMServer
         InputStream clientIn = thisSocket.getInputStream();
         BufferedReader bin = new BufferedReader(new InputStreamReader(clientIn));
         ObjectOutputStream os = new ObjectOutputStream(thisSocket.getOutputStream());
-        os.writeObject("Connected to Server!!");
-        
+        os.writeObject("Connected 1to Server!!");
+        ObjectInputStream sInput  = new ObjectInputStream(thisSocket.getInputStream());
         // Get Username & Password (should be sent in succession)
-        String username = bin.readLine();
-        String password = bin.readLine();
-        
-        // Check hashmap for username password combo
-        if(!users.containsKey(username)){
-            users.put(username, userPort);
-            userPort++;
-        }
-        // Send back 
-        out.println(6 + " " + username);
-        
+        String msg = null;
+        while(true) {
+            try {
+                msg = (String) sInput.readObject();
+                String response = parseMessage();
+                os.writeObject(response);
+            } catch (Exception ex) {
+                Logger.getLogger(ThreadedIMServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+        }        
         
     } catch (IOException e) {
         e.printStackTrace();
@@ -72,6 +75,21 @@ public class ThreadedIMServer
 	you handle the handshake with the client, and then
 	put your readline busy wait
 	**************************/
+  }
+  
+  public String parseMessage(String msg) {
+      int type = Integer.parseInt(msg.substring(0, 1));
+      switch(type) {
+          case 0:
+              break;
+          case 1:
+              break;
+          
+          
+          
+      }
+      
+      return "null";
   }
   
 }

@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -33,13 +35,26 @@ public class Chat extends javax.swing.JFrame {
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
     public boolean succesfulConn;
-    public String msg;
+    public String inbox;
+    public String outbox;
+    ObjectInputStream is;
+    Socket IMServer;// = new Socket(InetAddress.getByName("localhost"), 4225);
+    ObjectOutputStream os; //= new ObjectOutputStream(IMServer.getOutputStream());
+    
 
     /**
      * Creates new form ChatBox
      */
     public Chat() {
-        initComponents();
+        try {
+            initComponents();
+            IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
+            os = new ObjectOutputStream(IMServer.getOutputStream());
+            is = new ObjectInputStream(IMServer.getInputStream());
+        } catch (Exception ex) {
+            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     public Boolean logUserIn(String name, String pw) throws Exception {
@@ -329,6 +344,7 @@ public class Chat extends javax.swing.JFrame {
 
     private void loginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseClicked
         // TODO add your handling code here:
+        status.setText("Button pressed");
     }//GEN-LAST:event_loginMouseClicked
 
     private void createNewUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewUserMouseClicked
@@ -342,9 +358,14 @@ public class Chat extends javax.swing.JFrame {
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         String un = username.getText();
         String pw = password.getText();
+        outbox = "1 "+ un + " " + pw;
+        new sendToServer().start();
+        new ListenFromServer().start();
+        
+       //Format:  1 USERNAME PASSWORD
         try {
             //Username logged in
-            if (logUserIn(un,pw)) {
+            if (inbox.equals("6")) {
                 JOptionPane.showMessageDialog(this, "You're logged in!",
                         "Logged In", JOptionPane.INFORMATION_MESSAGE);
                 loginPanel.hide();
@@ -355,7 +376,8 @@ public class Chat extends javax.swing.JFrame {
                             "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_loginActionPerformed
 
@@ -376,6 +398,7 @@ public class Chat extends javax.swing.JFrame {
         String un = newUsername.getText();
         String password1  = newPassword1.getText();
         String password2 = newPassword2.getText();
+        
         try {
             //Password mismatch
             if (!(password1.equals(password2))) {
@@ -404,6 +427,11 @@ public class Chat extends javax.swing.JFrame {
     
     public void initializeConnection() {
         new ListenFromServer().start();
+    }
+    
+    public String send(String message) {
+        new sendToServer().start();
+        return "";
     }
     
     
@@ -435,6 +463,8 @@ public class Chat extends javax.swing.JFrame {
         Chat c = new Chat();
         c.startClient();
         c.initializeConnection();
+        //c.login
+        //c.getBuddies
         
         
 //        java.awt.EventQueue.invokeLater(new Runnable() {
@@ -454,21 +484,28 @@ public class Chat extends javax.swing.JFrame {
     class ListenFromServer extends Thread {
         
         public void run() {
-            while(true) {
+            //while(true) {
                 try {
                     
-                    String line = null;
-                    Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
-                    ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
-                   
-                    //InputStream in = IMServer.getInputStream();
-                    //BufferedReader bin = new BufferedReader(new InputStreamReader(in));
-                    
-                    //while( (line = bin.readLine()) != null)
-                    //line = bin.readLine();
-                    String msg = (String) sInput.readObject();
+                    inbox = (String) is.readObject();
                     //msg = line;
-                    status.setText(msg);
+                    status.setText(inbox);
+
+     
+                } catch (Exception ioe) {
+                    System.err.println(ioe);
+                }
+            //}
+        }
+    }
+    
+    class sendToServer extends Thread {
+        
+        public void run() {
+            //while(true) {
+                try {                    
+                    
+                    os.writeObject(outbox);
 
         //            Send login info to server from here
         //            Recall:
@@ -481,7 +518,7 @@ public class Chat extends javax.swing.JFrame {
                 } catch (Exception ioe) {
                     System.err.println(ioe);
                 }
-            }
+            //}
         }
     }
 
