@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package imserver;
 
 import java.io.BufferedReader;
@@ -35,6 +30,7 @@ public class Chat extends javax.swing.JFrame {
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
     public boolean succesfulConn;
+<<<<<<< HEAD
     public String inbox;
     public String outbox;
     ObjectInputStream is;
@@ -42,10 +38,19 @@ public class Chat extends javax.swing.JFrame {
     ObjectOutputStream os; //= new ObjectOutputStream(IMServer.getOutputStream());
     
 
+=======
+    public String msg;
+    public ThreadedIMServer server;
+    Socket serverSocket;
+    ObjectInputStream readServer;
+    ObjectOutputStream writeServer;
+    
+>>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
     /**
      * Creates new form ChatBox
      */
     public Chat() {
+<<<<<<< HEAD
         try {
             initComponents();
             IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
@@ -56,6 +61,19 @@ public class Chat extends javax.swing.JFrame {
         }
         
     }
+=======
+        initComponents();
+        server = new ThreadedIMServer();
+        try {
+            serverSocket = new Socket(InetAddress.getByName("163.11.2.127"), 4225);
+            readServer  = new ObjectInputStream(serverSocket.getInputStream());
+            writeServer  = new ObjectOutputStream(serverSocket.getOutputStream());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+   }
+>>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
 
     public Boolean logUserIn(String name, String pw) throws Exception {
         Boolean userLoggedIn = false;
@@ -79,6 +97,7 @@ public class Chat extends javax.swing.JFrame {
             else{
                 if(pwCheck.toString().equals(pw)){
                     userLoggedIn = true;
+                    writeServer.writeBytes(pw);
                 }
                 else{
                     userLoggedIn = false;
@@ -417,7 +436,7 @@ public class Chat extends javax.swing.JFrame {
                 }
             }
         } catch (Exception ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_createNewAccountAction
 
@@ -463,6 +482,7 @@ public class Chat extends javax.swing.JFrame {
         Chat c = new Chat();
         c.startClient();
         c.initializeConnection();
+<<<<<<< HEAD
         //c.login
         //c.getBuddies
         
@@ -478,6 +498,9 @@ public class Chat extends javax.swing.JFrame {
 //                // Now use this ClientConnectionWoker thread to handle all listening activities
 //            }
 //        });
+=======
+
+>>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
 
     }
     
@@ -487,6 +510,7 @@ public class Chat extends javax.swing.JFrame {
             //while(true) {
                 try {
                     
+<<<<<<< HEAD
                     inbox = (String) is.readObject();
                     //msg = line;
                     status.setText(inbox);
@@ -506,6 +530,13 @@ public class Chat extends javax.swing.JFrame {
                 try {                    
                     
                     os.writeObject(outbox);
+=======
+                    Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
+                    ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
+
+                    String msg = (String) sInput.readObject();
+                    status.setText(msg);
+>>>>>>> 66bd6cbc33f32cffd39821db1142a41d5d0471de
 
         //            Send login info to server from here
         //            Recall:
