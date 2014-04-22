@@ -41,6 +41,8 @@ public class ThreadedIMServer
         out.println("Hello from your server");
         InputStream clientIn = thisSocket.getInputStream();
         BufferedReader bin = new BufferedReader(new InputStreamReader(clientIn));
+        ObjectOutputStream os = new ObjectOutputStream(thisSocket.getOutputStream());
+        os.writeObject("Connected to Server!!");
         
         // Get Username & Password (should be sent in succession)
         String username = bin.readLine();

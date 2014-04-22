@@ -9,9 +9,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -31,6 +32,8 @@ public class Chat extends javax.swing.JFrame {
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
+    public boolean succesfulConn;
+    public String msg;
 
     /**
      * Creates new form ChatBox
@@ -395,9 +398,15 @@ public class Chat extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_createNewAccountAction
 
-    /**
-     * @param args the command line arguments
-     */
+    public void startClient() {
+        this.setVisible(true);        
+    }
+    
+    public void initializeConnection() {
+        new ListenFromServer().start();
+    }
+    
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -423,18 +432,57 @@ public class Chat extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                Chat thisChat = new Chat();
-                thisChat.setVisible(true);
+        Chat c = new Chat();
+        c.startClient();
+        c.initializeConnection();
+        
+        
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                Chat thisChat = new Chat();
+//                thisChat.setVisible(true);
+//                //new ListenFromServer().start();
+//                //ClientConnectionWorker c = new ClientConnectionWorker(4225);
+//                //c.execute();
+//
+//                // Now use this ClientConnectionWoker thread to handle all listening activities
+//            }
+//        });
 
-                ClientConnectionWorker c = new ClientConnectionWorker(4225);
-                c.execute();
+    }
+    
+    class ListenFromServer extends Thread {
+        
+        public void run() {
+            while(true) {
+                try {
+                    
+                    String line = null;
+                    Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
+                    ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
+                   
+                    //InputStream in = IMServer.getInputStream();
+                    //BufferedReader bin = new BufferedReader(new InputStreamReader(in));
+                    
+                    //while( (line = bin.readLine()) != null)
+                    //line = bin.readLine();
+                    String msg = (String) sInput.readObject();
+                    //msg = line;
+                    status.setText(msg);
 
-                // Now use this ClientConnectionWoker thread to handle all listening activities
+        //            Send login info to server from here
+        //            Recall:
+        //            1  - LOGON 
+        //            From client to server
+        //            Format:  1 USERNAME PASSWORD
+        //            Example: 1 mzimmerm qaz123
+
+
+                } catch (Exception ioe) {
+                    System.err.println(ioe);
+                }
             }
-        });
-
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
