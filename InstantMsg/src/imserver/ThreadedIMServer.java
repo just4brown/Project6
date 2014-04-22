@@ -27,6 +27,8 @@ public class ThreadedIMServer
     ServerConnectionThread connectThread = new ServerConnectionThread(this,
          connection);
     connectThread.start();
+    
+    
   }
 
   public void run() {
