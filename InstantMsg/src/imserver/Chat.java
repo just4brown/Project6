@@ -25,12 +25,6 @@ import javax.swing.JOptionPane;
  */
 public class Chat extends javax.swing.JFrame {
 
-    private Connection connect = null;
-    private Statement statement = null;
-    private PreparedStatement preparedStatement = null;
-    private ResultSet resultSet = null;
-    public boolean succesfulConn;
-
     public String inbox;
     public String outbox;
     ObjectInputStream is;
@@ -59,71 +53,7 @@ public class Chat extends javax.swing.JFrame {
         
    }
 
-    public Boolean logUserIn(String name, String pw) throws Exception {
-        Boolean userLoggedIn = false;
-        try {
-             
-            // this will load the MySQL driver, each DB has its own driver
-            Class.forName("com.mysql.jdbc.Driver");
-            // setup the connection with the DB.
-            connect = DriverManager
-                    .getConnection("jdbc:mysql://john.cedarville.edu:3306/cs4220?"
-                            + "user=cs4220&password=");
-            statement = connect.createStatement();
-            // resultSet gets the result of the SQL query
-            resultSet = statement
-                    .executeQuery("select name,pw from JLChatUsers where name='"+name+"'");
-            resultSet.next();
-            String pwCheck = resultSet.getString("pw");
-            if(pwCheck==null){
-                userLoggedIn = false;
-            }
-            else{
-                if(pwCheck.toString().equals(pw)){
-                    userLoggedIn = true;
-                    writeServer.writeBytes(pw);
-                }
-                else{
-                    userLoggedIn = false;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally{
-            return userLoggedIn;
-        }
-    }
     
-    public Boolean logNewUser(String name, String pw) throws Exception {
-        Boolean userExists = false;
-        try {
-             
-            // this will load the MySQL driver, each DB has its own driver
-            Class.forName("com.mysql.jdbc.Driver");
-            // setup the connection with the DB.
-            connect = DriverManager
-                    .getConnection("jdbc:mysql://john.cedarville.edu:3306/cs4220?"
-                            + "user=cs4220&password=");
-            statement = connect.createStatement();
-            resultSet = statement
-                    .executeQuery("select name from JLChatUsers where name='"+name+"'");
-            if(resultSet.next()){
-                userExists = true;
-            }
-            else{
-                userExists = false;
-                statement = connect.createStatement();
-                statement.executeUpdate("insert into JLChatUsers values('"+name+"','"+pw+"')");
-            }
-                       
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally{
-            return userExists;
-        }
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
