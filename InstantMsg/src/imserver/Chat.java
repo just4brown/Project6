@@ -64,7 +64,6 @@ public class Chat extends javax.swing.JFrame {
     private void initComponents() {
 
         DialogBox = new javax.swing.JDialog();
-        closeChat1 = new javax.swing.JButton();
         messageFeed = new javax.swing.JScrollPane();
         textBox = new javax.swing.JTextField();
         sendMsgButton = new javax.swing.JButton();
@@ -89,13 +88,6 @@ public class Chat extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
 
-        closeChat1.setText("X");
-        closeChat1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeChat(evt);
-            }
-        });
-
         messageFeed.setBackground(new java.awt.Color(204, 255, 204));
 
         textBox.setText("Enter Text");
@@ -114,24 +106,18 @@ public class Chat extends javax.swing.JFrame {
             .addGroup(DialogBoxLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(messageFeed)
                     .addGroup(DialogBoxLayout.createSequentialGroup()
                         .addComponent(textBox, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(sendMsgButton)
-                        .addContainerGap())
-                    .addGroup(DialogBoxLayout.createSequentialGroup()
-                        .addComponent(messageFeed)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeChat1))))
+                        .addComponent(sendMsgButton)))
+                .addContainerGap())
         );
         DialogBoxLayout.setVerticalGroup(
             DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(DialogBoxLayout.createSequentialGroup()
-                .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(DialogBoxLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(messageFeed, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(closeChat1))
+                .addContainerGap()
+                .addComponent(messageFeed, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(textBox)
@@ -528,7 +514,6 @@ public class Chat extends javax.swing.JFrame {
     private javax.swing.JDialog DialogBox;
     private javax.swing.JLayeredPane buddylistpanel;
     private javax.swing.JButton closeChat;
-    private javax.swing.JButton closeChat1;
     private javax.swing.JButton createNewUser;
     private javax.swing.JFrame createNewUserBox;
     private javax.swing.JButton jButton1;
