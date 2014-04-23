@@ -63,7 +63,11 @@ public class Chat extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jDialog1 = new javax.swing.JDialog();
+        DialogBox = new javax.swing.JDialog();
+        closeChat1 = new javax.swing.JButton();
+        messageFeed = new javax.swing.JScrollPane();
+        textBox = new javax.swing.JTextField();
+        sendMsgButton = new javax.swing.JButton();
         createNewUserBox = new javax.swing.JFrame();
         usernameLabel1 = new javax.swing.JLabel();
         newUsername = new javax.swing.JTextField();
@@ -85,15 +89,56 @@ public class Chat extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
 
-        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
-        jDialog1.getContentPane().setLayout(jDialog1Layout);
-        jDialog1Layout.setHorizontalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+        closeChat1.setText("X");
+        closeChat1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeChat(evt);
+            }
+        });
+
+        messageFeed.setBackground(new java.awt.Color(204, 255, 204));
+
+        textBox.setText("Enter Text");
+
+        sendMsgButton.setText("SEND");
+        sendMsgButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendMsgButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout DialogBoxLayout = new javax.swing.GroupLayout(DialogBox.getContentPane());
+        DialogBox.getContentPane().setLayout(DialogBoxLayout);
+        DialogBoxLayout.setHorizontalGroup(
+            DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DialogBoxLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DialogBoxLayout.createSequentialGroup()
+                        .addComponent(textBox, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sendMsgButton)
+                        .addContainerGap())
+                    .addGroup(DialogBoxLayout.createSequentialGroup()
+                        .addComponent(messageFeed)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(closeChat1))))
         );
-        jDialog1Layout.setVerticalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        DialogBoxLayout.setVerticalGroup(
+            DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DialogBoxLayout.createSequentialGroup()
+                .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DialogBoxLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(messageFeed, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(closeChat1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(DialogBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textBox)
+                    .addGroup(DialogBoxLayout.createSequentialGroup()
+                        .addGap(0, 21, Short.MAX_VALUE)
+                        .addComponent(sendMsgButton, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         createNewUserBox.setMinimumSize(new java.awt.Dimension(300, 350));
@@ -407,6 +452,10 @@ public class Chat extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_createNewAccountAction
 
+    private void sendMsgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMsgButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sendMsgButtonActionPerformed
+
     public void startClient() {
         this.setVisible(true);        
     }
@@ -476,16 +525,18 @@ public class Chat extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog DialogBox;
     private javax.swing.JLayeredPane buddylistpanel;
     private javax.swing.JButton closeChat;
+    private javax.swing.JButton closeChat1;
     private javax.swing.JButton createNewUser;
     private javax.swing.JFrame createNewUserBox;
     private javax.swing.JButton jButton1;
-    private javax.swing.JDialog jDialog1;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton login;
     private javax.swing.JLayeredPane loginPanel;
+    private javax.swing.JScrollPane messageFeed;
     private javax.swing.JPasswordField newPassword1;
     private javax.swing.JPasswordField newPassword2;
     private javax.swing.JTextField newUsername;
@@ -493,7 +544,9 @@ public class Chat extends javax.swing.JFrame {
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JLabel passwordLabel1;
     private javax.swing.JLabel passwordLabel2;
+    private javax.swing.JButton sendMsgButton;
     private javax.swing.JLabel status;
+    private javax.swing.JTextField textBox;
     private javax.swing.JTextField username;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JLabel usernameLabel1;
