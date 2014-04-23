@@ -42,8 +42,7 @@ public class Chat extends javax.swing.JFrame {
      */
     public Chat() {
         initComponents();
-        
-        // Problem: Client won't start if Socket connection fails
+        buddylistpanel.hide();
         
         try {
             IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
@@ -54,8 +53,6 @@ public class Chat extends javax.swing.JFrame {
         }
         
    }
-
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -84,6 +81,9 @@ public class Chat extends javax.swing.JFrame {
         createNewUser = new javax.swing.JButton();
         login = new javax.swing.JButton();
         status = new javax.swing.JLabel();
+        buddylistpanel = new javax.swing.JLayeredPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -234,7 +234,7 @@ public class Chat extends javax.swing.JFrame {
                 .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(login)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addComponent(createNewUser)
                 .addGap(48, 48, 48))
         );
@@ -247,31 +247,67 @@ public class Chat extends javax.swing.JFrame {
 
         status.setText("Welcome");
 
+        jList1.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Buddy 1", "Buddy 2", "Buddy 3", "Buddy 4", "Buddy 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
+
+        javax.swing.GroupLayout buddylistpanelLayout = new javax.swing.GroupLayout(buddylistpanel);
+        buddylistpanel.setLayout(buddylistpanelLayout);
+        buddylistpanelLayout.setHorizontalGroup(
+            buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buddylistpanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        buddylistpanelLayout.setVerticalGroup(
+            buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buddylistpanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        buddylistpanel.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(closeChat, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))))
+                .addContainerGap(196, Short.MAX_VALUE)
+                .addComponent(closeChat))
             .addGroup(layout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(status)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(95, 95, 95)
+                        .addComponent(status))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(20, Short.MAX_VALUE)
+                    .addComponent(buddylistpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(closeChat)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(loginPanel)
                 .addGap(18, 18, 18)
-                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addComponent(status)
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(51, 51, 51)
+                    .addComponent(buddylistpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(63, Short.MAX_VALUE)))
         );
 
         pack();
@@ -299,10 +335,9 @@ public class Chat extends javax.swing.JFrame {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
-        
-        
+             
        //Format:  1 USERNAME PASSWORD
         try {
             //Username logged in
@@ -310,6 +345,7 @@ public class Chat extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "You're logged in!",
                         "Logged In", JOptionPane.INFORMATION_MESSAGE);
                 loginPanel.hide();
+                buddylistpanel.show();
             } //Username exists
             else {
                 //Password is wrong or username doesn't exist
@@ -331,6 +367,11 @@ public class Chat extends javax.swing.JFrame {
 
         if (result == JOptionPane.YES_OPTION) {
             this.dispose();
+            try {
+                IMServer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }//GEN-LAST:event_closeChat
 
@@ -435,11 +476,14 @@ public class Chat extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLayeredPane buddylistpanel;
     private javax.swing.JButton closeChat;
     private javax.swing.JButton createNewUser;
     private javax.swing.JFrame createNewUserBox;
     private javax.swing.JButton jButton1;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JList jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton login;
     private javax.swing.JLayeredPane loginPanel;
     private javax.swing.JPasswordField newPassword1;
