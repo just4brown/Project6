@@ -195,6 +195,7 @@ public class Chat extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("chatWindow");
+        setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         setName("chatWindow"); // NOI18N
 
         closeChat.setText("X");
@@ -208,12 +209,12 @@ public class Chat extends javax.swing.JFrame {
         usernameLabel.setText(" Username");
 
         username.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        username.setText("Enter Username");
+        username.setText("Bob");
 
         passwordLabel.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
         passwordLabel.setText(" Password");
 
-        password.setText("jPasswordField1");
+        password.setText("abcd");
 
         createNewUser.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
         createNewUser.setText("Create New User");
@@ -283,6 +284,11 @@ public class Chat extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList1ValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout buddylistpanelLayout = new javax.swing.GroupLayout(buddylistpanel);
@@ -308,7 +314,7 @@ public class Chat extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(196, Short.MAX_VALUE)
+                .addContainerGap(195, Short.MAX_VALUE)
                 .addComponent(closeChat))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -321,7 +327,7 @@ public class Chat extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(20, Short.MAX_VALUE)
+                    .addContainerGap(19, Short.MAX_VALUE)
                     .addComponent(buddylistpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()))
         );
@@ -442,6 +448,20 @@ public class Chat extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_sendMsgButtonActionPerformed
 
+    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+        // TODO add your handling code here:
+        // ChatBox CB = new ChatBox("Pete");
+        //DialogBox.show();
+        //new chatThread().start();
+        BuddyChat bc = new BuddyChat();
+        bc.setVisible(true);
+//        ChatBox dialog = new ChatBox(new javax.swing.JFrame(), true);
+//        dialog.updateD("yes");
+//        dialog.setVisible(true);
+        bc.updateD("yes");
+        
+    }//GEN-LAST:event_jList1ValueChanged
+
     public void startClient() {
         this.setVisible(true);        
     }
@@ -509,6 +529,17 @@ public class Chat extends javax.swing.JFrame {
                 }
         }
     }
+    
+    class chatThread extends Thread {
+        
+        public void run() {
+            //ChatBox dialog = new ChatBox(new javax.swing.JFrame(), true);
+            //dialog.setVisible(true);
+            //dialog.update(msg);
+        }
+    }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog DialogBox;
