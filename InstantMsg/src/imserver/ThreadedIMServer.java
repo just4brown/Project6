@@ -49,15 +49,10 @@ public class ThreadedIMServer
     
     try {
         
-        PrintWriter out = new PrintWriter
-           (new PrintWriter(thisSocket.getOutputStream(), true));
-        //out.println("Hello from your server");
-        InputStream clientIn = thisSocket.getInputStream();
-        BufferedReader bin = new BufferedReader(new InputStreamReader(clientIn));
         ObjectOutputStream os = new ObjectOutputStream(thisSocket.getOutputStream());
         ObjectInputStream sInput  = new ObjectInputStream(thisSocket.getInputStream());
 
-        //os.writeObject("Connected 1to Server!!");        
+        //os.writeObject("Connected to Server!!");        
         
         // Get Username & Password (should be sent in succession)
         String msg = null;
@@ -68,19 +63,13 @@ public class ThreadedIMServer
                 String response = parseMessage(msg, os);
                 os.writeObject(response);
             } catch (Exception ex) {
-                Logger.getLogger(ThreadedIMServer.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
-            
-            
         }        
         
     } catch (IOException e) {
         e.printStackTrace();
     }   
-           
-           
-    String user = null;
-    
 
   }
   
@@ -89,38 +78,53 @@ public class ThreadedIMServer
       String[] s = msg.split(" ");
       int type = Integer.parseInt(s[0]);
       String un = s[1];
+      String response = "";
       switch(type) {
           case 0: // Create Account
-              break;
+              String pw1 = s[2];
+              if(logNewUser(un,pw1)) {                  
+                  notifyBuddies(un, "on");
+                  usersOn.put(un, os);
+                  System.out.println("6 " + un);
+                  response = "6 " + un;
+                  break;
+              }
+              else {
+                  response = "7 " + un;
+                  break;
+              } 
           case 1: // Log on              
               String pw = s[2];
               if(logUserIn(un,pw)) {                  
                   notifyBuddies(un, "on");
                   usersOn.put(un, os);
-                  return ("6 " + un);
+                  response = "6 " + un;
+                  break;
               }
               else {
-                  return ("7 " + un);
+                  response = "7 " + un;
+                  break;
               }            
               
           case 2: // Log off
                // notifyBuddies(un, "off");
               // usersOn.remove(un);
               //
+              response = "not ready";
               break;
           case 3: // Outgoing/Incoming message
               String recipient = s[2];
               String text = s[3];
+              response = "not ready";
               break;
           case 4: // Buddy off notify
+              response = "not ready";
               break;
           
           
-          
-          
+         
       }
-      
-      return "null";
+      return response; 
   }
   
   public void notifyBuddies(String user, String status) {

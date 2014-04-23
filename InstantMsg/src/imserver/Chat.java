@@ -1,22 +1,14 @@
 package imserver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,23 +17,16 @@ import javax.swing.JOptionPane;
  */
 public class Chat extends javax.swing.JFrame {
 
-    private Connection connect = null;
-    private Statement statement = null;
-    private PreparedStatement preparedStatement = null;
-    private ResultSet resultSet = null;
     public boolean succesfulConn;
 
     public String inbox;
     public String outbox;
     ObjectInputStream is;
-    Socket IMServer;// = new Socket(InetAddress.getByName("localhost"), 4225);
-    ObjectOutputStream os; //= new ObjectOutputStream(IMServer.getOutputStream());
+    ObjectOutputStream os; 
 
     public String msg;
-    public ThreadedIMServer server;
     Socket serverSocket;
 
-    
     /**
      * Creates new form ChatBox
      */
@@ -49,79 +34,13 @@ public class Chat extends javax.swing.JFrame {
         initComponents();
         buddyListPane.hide();
         try {
-            serverSocket = new Socket(InetAddress.getByName("163.11.2.127"), 4225);
-            is  = new ObjectInputStream(serverSocket.getInputStream());
-            os  = new ObjectOutputStream(serverSocket.getOutputStream());
+            serverSocket = new Socket(InetAddress.getByName("localhost"), 4225);
+            is = new ObjectInputStream(serverSocket.getInputStream());
+            os = new ObjectOutputStream(serverSocket.getOutputStream());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
-   }
 
-    public Boolean logUserIn(String name, String pw) throws Exception {
-        Boolean userLoggedIn = false;
-        try {
-             
-            // this will load the MySQL driver, each DB has its own driver
-            Class.forName("com.mysql.jdbc.Driver");
-            // setup the connection with the DB.
-            connect = DriverManager
-                    .getConnection("jdbc:mysql://john.cedarville.edu:3306/cs4220?"
-                            + "user=cs4220&password=");
-            statement = connect.createStatement();
-            // resultSet gets the result of the SQL query
-            resultSet = statement
-                    .executeQuery("select name,pw from JLChatUsers where name='"+name+"'");
-            resultSet.next();
-            String pwCheck = resultSet.getString("pw");
-            if(pwCheck==null){
-                userLoggedIn = false;
-            }
-            else{
-                if(pwCheck.toString().equals(pw)){
-                    userLoggedIn = true;
-                    os.writeBytes(pw);
-                }
-                else{
-                    userLoggedIn = false;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally{
-            return userLoggedIn;
-        }
-    }
-    
-    public Boolean logNewUser(String name, String pw) throws Exception {
-        Boolean userExists = false;
-        try {
-             
-            // this will load the MySQL driver, each DB has its own driver
-            Class.forName("com.mysql.jdbc.Driver");
-            // setup the connection with the DB.
-            connect = DriverManager
-                    .getConnection("jdbc:mysql://john.cedarville.edu:3306/cs4220?"
-                            + "user=cs4220&password=");
-            statement = connect.createStatement();
-            resultSet = statement
-                    .executeQuery("select name from JLChatUsers where name='"+name+"'");
-            if(resultSet.next()){
-                userExists = true;
-            }
-            else{
-                userExists = false;
-                statement = connect.createStatement();
-                statement.executeUpdate("insert into JLChatUsers values('"+name+"','"+pw+"')");
-            }
-                       
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally{
-            return userExists;
-        }
     }
 
     /**
@@ -421,29 +340,22 @@ public class Chat extends javax.swing.JFrame {
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         String un = username.getText();
         String pw = password.getText();
-        outbox = "1 "+ un + " " + pw;
+        outbox = "1 " + un + " " + pw;
         new sendToServer().start();
         new ListenFromServer().start();
-        
-       //Format:  1 USERNAME PASSWORD
-        try {
-            Boolean loggedin = logUserIn(un,pw);
-            //Username logged in
-            //if (inbox.equals("6")) {
-            if(loggedin){
-                JOptionPane.showMessageDialog(this, "You're logged in!",
-                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
-                loginPanel.hide();
-                buddyListPane.show();
-            } //Username exists
-            else {
-                //Password is wrong or username doesn't exist
-                    JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception ex) {
-            //Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
+
+        //Format:  1 USERNAME PASSWORD
+        //Username logged in
+        if (inbox.startsWith("6")) {
+            JOptionPane.showMessageDialog(this, "You're logged in!",
+                    "Logged In", JOptionPane.INFORMATION_MESSAGE);
+            loginPanel.hide();
+            buddyListPane.show();
+        } //Username exists
+        else {
+            //Password is wrong or username doesn't exist
+            JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_loginActionPerformed
 
@@ -462,28 +374,33 @@ public class Chat extends javax.swing.JFrame {
     private void createNewAccountAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewAccountAction
         //Username already exists
         String un = newUsername.getText();
-        String password1  = newPassword1.getText();
+        String password1 = newPassword1.getText();
         String password2 = newPassword2.getText();
-        
-        try {
-            //Password mismatch
-            if (!(password1.equals(password2))) {
-                JOptionPane.showMessageDialog(createNewUserBox, "Passwords must match.",
-                        "Password error", JOptionPane.ERROR_MESSAGE);
-            } //Username and passwords are good to be created
-            else {
-                if(logNewUser(un,password1)){
-                    JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
-                    "Username error", JOptionPane.ERROR_MESSAGE);
-                }
-                else{
-                    JOptionPane.showMessageDialog(this, "You're logged in!",
+
+        //Password mismatch
+        if (!(password1.equals(password2))) {
+            JOptionPane.showMessageDialog(createNewUserBox, "Passwords must match.",
+                    "Password error", JOptionPane.ERROR_MESSAGE);
+        } //Username and passwords are good to be created
+        else {
+            outbox = "0 " + un + " " + password1;
+            new sendToServer().start();
+            new ListenFromServer().start();
+
+            //Format:  0 USERNAME PASSWORD
+            //Username logged in
+            if (inbox.equals("6")) {
+                JOptionPane.showMessageDialog(this, "You're logged in!",
                         "Logged In", JOptionPane.INFORMATION_MESSAGE);
-                    createNewUserBox.hide();
-                }
+                createNewUserBox.hide();
+                loginPanel.hide();
+                buddyListPane.show();
+            } //Username exists
+            else {
+                //Password is wrong or username doesn't exist
+                JOptionPane.showMessageDialog(this, "This username already exists.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }//GEN-LAST:event_createNewAccountAction
 
@@ -492,19 +409,18 @@ public class Chat extends javax.swing.JFrame {
     }//GEN-LAST:event_sendMessage
 
     public void startClient() {
-        this.setVisible(true);        
+        this.setVisible(true);
     }
-    
+
     public void initializeConnection() {
         new ListenFromServer().start();
     }
-    
+
     public String send(String message) {
         new sendToServer().start();
         return "";
     }
-    
-    
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -535,50 +451,45 @@ public class Chat extends javax.swing.JFrame {
         c.initializeConnection();
 
     }
-    
-    class ListenFromServer extends Thread {
-        
-        public void run() {
-            //while(true) {
-                try {
-                    
-                    inbox = (String) is.readObject();
-                    //msg = line;
-                    status.setText(inbox);
 
-     
-                } catch (Exception ioe) {
-                    System.err.println(ioe);
-                }
-            //}
+    class ListenFromServer extends Thread {
+
+        public void run() {
+            try {
+
+                inbox = (String) is.readObject();
+                //msg = line;
+                status.setText(inbox);
+
+            } catch (Exception ioe) {
+                System.err.println(ioe);
+            }
         }
     }
-    
+
     class sendToServer extends Thread {
-        
+
         public void run() {
             //while(true) {
-                try {                    
-                    
-                    os.writeObject(outbox);
+            try {
 
-                    Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
-                    ObjectInputStream sInput  = new ObjectInputStream(IMServer.getInputStream());
+                os.writeObject(outbox);
 
-                    String msg = (String) sInput.readObject();
-                    status.setText(msg);
+                Socket IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
+                ObjectInputStream sInput = new ObjectInputStream(IMServer.getInputStream());
 
-        //            Send login info to server from here
-        //            Recall:
-        //            1  - LOGON 
-        //            From client to server
-        //            Format:  1 USERNAME PASSWORD
-        //            Example: 1 mzimmerm qaz123
+                String msg = (String) sInput.readObject();
+                status.setText(msg);
 
-
-                } catch (Exception ioe) {
-                    System.err.println(ioe);
-                }
+                //            Send login info to server from here
+                //            Recall:
+                //            1  - LOGON 
+                //            From client to server
+                //            Format:  1 USERNAME PASSWORD
+                //            Example: 1 mzimmerm qaz123
+            } catch (Exception ioe) {
+                System.err.println(ioe);
+            }
             //}
         }
     }
