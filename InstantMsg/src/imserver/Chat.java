@@ -216,12 +216,17 @@ public class Chat extends javax.swing.JFrame {
         usernameLabel.setText(" Username");
 
         username.setFont(new java.awt.Font("Calibri", 0, 11)); // NOI18N
-        username.setText("Bob");
+        username.setText("Username");
 
         passwordLabel.setFont(new java.awt.Font("Calibri", 1, 11)); // NOI18N
         passwordLabel.setText(" Password");
 
-        password.setText("abcd");
+        password.setText("password");
+        password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordActionPerformed(evt);
+            }
+        });
 
         createNewUser.setFont(new java.awt.Font("Calibri", 2, 12)); // NOI18N
         createNewUser.setText("Create New User");
@@ -258,7 +263,7 @@ public class Chat extends javax.swing.JFrame {
                         .addComponent(passwordLabel)
                         .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(createNewUser)))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addGap(57, 57, 57))
         );
         loginPanelLayout.setVerticalGroup(
             loginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -273,7 +278,7 @@ public class Chat extends javax.swing.JFrame {
                 .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(login)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
                 .addComponent(createNewUser)
                 .addGap(48, 48, 48))
         );
@@ -312,18 +317,17 @@ public class Chat extends javax.swing.JFrame {
             .addGroup(buddylistpanelLayout.createSequentialGroup()
                 .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(buddylistpanelLayout.createSequentialGroup()
-                        .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(buddylistpanelLayout.createSequentialGroup()
-                                .addGap(70, 70, 70)
-                                .addComponent(logout))
-                            .addGroup(buddylistpanelLayout.createSequentialGroup()
-                                .addGap(84, 84, 84)
-                                .addComponent(jLabel1)))
-                        .addGap(0, 60, Short.MAX_VALUE))
-                    .addGroup(buddylistpanelLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1)))
+                        .addComponent(jScrollPane1))
+                    .addGroup(buddylistpanelLayout.createSequentialGroup()
+                        .addGap(74, 74, 74)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buddylistpanelLayout.createSequentialGroup()
+                .addGap(0, 61, Short.MAX_VALUE)
+                .addComponent(logout)
+                .addGap(58, 58, 58))
         );
         buddylistpanelLayout.setVerticalGroup(
             buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -345,15 +349,17 @@ public class Chat extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(closeChat))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 71, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(closeChat))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 31, Short.MAX_VALUE))))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(71, Short.MAX_VALUE)
+                    .addContainerGap(52, Short.MAX_VALUE)
                     .addComponent(buddylistpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()))
         );
@@ -368,7 +374,7 @@ public class Chat extends javax.swing.JFrame {
                 .addGroup(layout.createSequentialGroup()
                     .addGap(51, 51, 51)
                     .addComponent(buddylistpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(63, Short.MAX_VALUE)))
+                    .addContainerGap(59, Short.MAX_VALUE)))
         );
 
         pack();
@@ -395,34 +401,8 @@ public class Chat extends javax.swing.JFrame {
        // new ListenFromServer().start();
         //Debug:
         
-        buddiesOnline.addElement("Jane Doe");
-        //
+        //buddiesOnline.addElement("No Buddies Online");
         
-        
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException ex) {
-//            ex.printStackTrace();
-//        }
-//             
-//       //Format:  1 USERNAME PASSWORD
-//        try {
-//            //Username logged in
-//            if (inbox.equals("6 " + un)) {
-//                JOptionPane.showMessageDialog(this, "You're logged in!",
-//                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
-//                loginPanel.hide();
-//                buddylistpanel.show();
-//            } //Username exists
-//            else {
-//                //Password is wrong or username doesn't exist
-//                    JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
-//                            "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-//        } catch (Exception ex) {
-//            //Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
-//            ex.printStackTrace();
-//        }
     }//GEN-LAST:event_loginActionPerformed
 
     private void closeChat(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeChat
@@ -459,25 +439,8 @@ public class Chat extends javax.swing.JFrame {
             else {
                 outbox = "0 " + un + " " + password1;
                 new sendToServer().start();
-                
-                
-                //if(logNewUser(un,password1)){
-                    //JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
-                    //"Username error", JOptionPane.ERROR_MESSAGE);
-                //}
-                //else{
-                
-//                JOptionPane.showMessageDialog(this, "You're logged in!",
-//                    "Logged In", JOptionPane.INFORMATION_MESSAGE);
-//                createNewUserBox.hide();
-//                loginPanel.hide();
-//                //buddiesOnline.addElement("John Doe");
-//                buddylistpanel.show();
-                //}
             }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
+
     }//GEN-LAST:event_createNewAccountAction
 
     private void sendMsgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMsgButtonActionPerformed
@@ -508,6 +471,10 @@ public class Chat extends javax.swing.JFrame {
         // TODO add your handling code here:
         logout();
     }//GEN-LAST:event_logoutActionPerformed
+
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordActionPerformed
 
     public void startClient() {
         this.setVisible(true);        
@@ -642,14 +609,7 @@ public class Chat extends javax.swing.JFrame {
         }
     }
     
-    class chatThread extends Thread {
-        
-        public void run() {
-            //ChatBox dialog = new ChatBox(new javax.swing.JFrame(), true);
-            //dialog.setVisible(true);
-            //dialog.update(msg);
-        }
-    }
+    
     
     
 
