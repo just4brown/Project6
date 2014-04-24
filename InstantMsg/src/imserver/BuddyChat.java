@@ -91,7 +91,7 @@ public class BuddyChat extends javax.swing.JFrame {
         textBox.setText("");
         msgDisplay.append("\n" + "Me" + ": " + message);
         String recipient = this.getTitle().substring(10); //chat with 
-        String toSend = "3 " + currentUser + recipient + message;
+        String toSend = "3 " + currentUser + " " +  recipient + " " + message;
         try {                    
             os.writeObject(toSend);
         } catch (Exception ioe) {

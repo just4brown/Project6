@@ -65,8 +65,8 @@ public class ThreadedIMServer
         while(true) {
             try {
                 msg = (String) sInput.readObject();
-                String response = parseMessage(msg, os);
-                os.writeObject(response);
+                parseMessage(msg, os);
+                //os.writeObject(response);
             } catch (Exception ex) {
                 Logger.getLogger(ThreadedIMServer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -84,25 +84,47 @@ public class ThreadedIMServer
 
   }
   
-  public String parseMessage(String msg, ObjectOutputStream os) throws Exception {
+  public void parseMessage(String msg, ObjectOutputStream os) throws Exception {
       
       String[] s = msg.split(" ");
       int type = Integer.parseInt(s[0]);
       String un = s[1];
       switch(type) {
           case 0: // Create Account
+             String pw1 = s[2];
+             if(!logNewUser(un,pw1)) {                  
+                 notifyBuddies(un, "on");
+                 usersOn.put(un, os);
+                 os.writeObject("6 " + un);
+                 for(Object o : usersOn.keySet()) {
+                      String bud = (String)o;
+                      if(!bud.equals(un)) {
+                          os.writeObject("4 " + bud);
+                      }
+                 }
+             }
+             else {
+                 os.writeObject("7 " + un);
+             }
               break;
           case 1: // Log on              
               String pw = s[2];
               if(logUserIn(un,pw)) {                  
                   notifyBuddies(un, "on");
                   usersOn.put(un, os);
-                  return ("6 " + un);
+                  os.writeObject("6 " + un);
+                  for(Object o : usersOn.keySet()) {
+                      String bud = (String)o;
+                      if(!bud.equals(un)) {
+                          os.writeObject("4 " + bud);
+                      }
+                  }
+                  
               }
               else {
-                  return ("7 " + un);
+                  os.writeObject("7 " + un);
               }            
-              
+              break;
           case 2: // Log off
               notifyBuddies(un, "off");
               usersOn.remove(un);
@@ -110,16 +132,17 @@ public class ThreadedIMServer
           case 3: // Outgoing/Incoming message
               String recipient = s[2];
               String text = s[3];
-              return ("3 "+ un + recipient + text);
-          case 4: // Buddy off notify
+              ObjectOutputStream rec = (ObjectOutputStream)usersOn.get(recipient);
+              rec.writeObject("3 "+ un + " " + recipient + " " + text);
               break;
+          
           
           
           
           
       }
       
-      return "null";
+      //return "null";
   }
   
   public void notifyBuddies(String user, String status) {

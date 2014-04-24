@@ -51,7 +51,7 @@ public class Chat extends javax.swing.JFrame {
         jList1.setModel(buddiesOnline);
         
         try {
-            IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
+            IMServer = new Socket("163.11.32.13", 4225);
             is  = new ObjectInputStream(IMServer.getInputStream());
             os  = new ObjectOutputStream(IMServer.getOutputStream());
         } catch (IOException ex) {
@@ -89,11 +89,11 @@ public class Chat extends javax.swing.JFrame {
         password = new javax.swing.JPasswordField();
         createNewUser = new javax.swing.JButton();
         login = new javax.swing.JButton();
-        status = new javax.swing.JLabel();
         buddylistpanel = new javax.swing.JLayeredPane();
-        logout = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
+        logout = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         messageFeed.setBackground(new java.awt.Color(204, 255, 204));
 
@@ -201,7 +201,7 @@ public class Chat extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("chatWindow");
+        setTitle("JL-Talk");
         setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
         setName("chatWindow"); // NOI18N
 
@@ -284,15 +284,6 @@ public class Chat extends javax.swing.JFrame {
         loginPanel.setLayer(createNewUser, javax.swing.JLayeredPane.DEFAULT_LAYER);
         loginPanel.setLayer(login, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
-        status.setText("Welcome");
-
-        logout.setText("Logout");
-        logout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                logoutActionPerformed(evt);
-            }
-        });
-
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Buddy 1", "Buddy 2", "Buddy 3", "Buddy 4", "Buddy 5" };
             public int getSize() { return strings.length; }
@@ -305,54 +296,64 @@ public class Chat extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jList1);
 
+        logout.setText("Logout");
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Buddies");
+
         javax.swing.GroupLayout buddylistpanelLayout = new javax.swing.GroupLayout(buddylistpanel);
         buddylistpanel.setLayout(buddylistpanelLayout);
         buddylistpanelLayout.setHorizontalGroup(
             buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buddylistpanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(buddylistpanelLayout.createSequentialGroup()
+                        .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(buddylistpanelLayout.createSequentialGroup()
+                                .addGap(70, 70, 70)
+                                .addComponent(logout))
+                            .addGroup(buddylistpanelLayout.createSequentialGroup()
+                                .addGap(84, 84, 84)
+                                .addComponent(jLabel1)))
+                        .addGap(0, 60, Short.MAX_VALUE))
+                    .addGroup(buddylistpanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
-            .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(buddylistpanelLayout.createSequentialGroup()
-                    .addGap(70, 70, 70)
-                    .addComponent(logout)
-                    .addContainerGap(70, Short.MAX_VALUE)))
         );
         buddylistpanelLayout.setVerticalGroup(
             buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buddylistpanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(logout)
                 .addContainerGap())
-            .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(buddylistpanelLayout.createSequentialGroup()
-                    .addGap(130, 130, 130)
-                    .addComponent(logout)
-                    .addContainerGap(131, Short.MAX_VALUE)))
         );
-        buddylistpanel.setLayer(logout, javax.swing.JLayeredPane.DEFAULT_LAYER);
         buddylistpanel.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        buddylistpanel.setLayer(logout, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        buddylistpanel.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(195, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(closeChat))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(95, 95, 95)
-                        .addComponent(status))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 71, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(19, Short.MAX_VALUE)
+                    .addContainerGap(71, Short.MAX_VALUE)
                     .addComponent(buddylistpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()))
         );
@@ -362,9 +363,7 @@ public class Chat extends javax.swing.JFrame {
                 .addComponent(closeChat)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(loginPanel)
-                .addGap(18, 18, 18)
-                .addComponent(status)
-                .addContainerGap())
+                .addGap(43, 43, 43))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(51, 51, 51)
@@ -393,7 +392,7 @@ public class Chat extends javax.swing.JFrame {
         String pw = password.getText();
         outbox = "1 "+ currentUser + " " + pw;
         new sendToServer().start();
-        new ListenFromServer().start();
+       // new ListenFromServer().start();
         //Debug:
         
         buddiesOnline.addElement("Jane Doe");
@@ -436,6 +435,7 @@ public class Chat extends javax.swing.JFrame {
         if (result == JOptionPane.YES_OPTION) {
             this.dispose();
             try {
+                logout();
                 IMServer.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -445,11 +445,12 @@ public class Chat extends javax.swing.JFrame {
 
     private void createNewAccountAction(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewAccountAction
         //Username already exists
+        currentUser = newUsername.getText();
         String un = newUsername.getText();
         String password1  = newPassword1.getText();
         String password2 = newPassword2.getText();
         
-        try {
+        //try {
             //Password mismatch
             if (!(password1.equals(password2))) {
                 JOptionPane.showMessageDialog(createNewUserBox, "Passwords must match.",
@@ -459,20 +460,24 @@ public class Chat extends javax.swing.JFrame {
                 outbox = "0 " + un + " " + password1;
                 new sendToServer().start();
                 
+                
                 //if(logNewUser(un,password1)){
                     //JOptionPane.showMessageDialog(createNewUserBox, "This username already exists.",
                     //"Username error", JOptionPane.ERROR_MESSAGE);
                 //}
                 //else{
                 
-//                    JOptionPane.showMessageDialog(this, "You're logged in!",
-//                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
-//                    createNewUserBox.hide();
+//                JOptionPane.showMessageDialog(this, "You're logged in!",
+//                    "Logged In", JOptionPane.INFORMATION_MESSAGE);
+//                createNewUserBox.hide();
+//                loginPanel.hide();
+//                //buddiesOnline.addElement("John Doe");
+//                buddylistpanel.show();
                 //}
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
     }//GEN-LAST:event_createNewAccountAction
 
     private void sendMsgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMsgButtonActionPerformed
@@ -501,13 +506,7 @@ public class Chat extends javax.swing.JFrame {
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
         // TODO add your handling code here:
-        String logout = "2 "+ currentUser;
-        //new sendToServer().start();
-        try {                    
-            os.writeObject(logout);
-        } catch (Exception ioe) {
-            System.err.println(ioe);
-        }
+        logout();
     }//GEN-LAST:event_logoutActionPerformed
 
     public void startClient() {
@@ -551,7 +550,7 @@ public class Chat extends javax.swing.JFrame {
         /* Create and display the form */
         Chat c = new Chat();
         c.startClient();
-        //c.initializeConnection();
+        c.initializeConnection();
 
     }
     
@@ -563,7 +562,7 @@ public class Chat extends javax.swing.JFrame {
                 try {
                     //inbox = (String) is.readObject();
                     received = (String)is.readObject();
-                    status.setText(received);
+                    //status.setText(received);
                 } catch (Exception ioe) {
                     System.err.println(ioe);
                 }
@@ -584,6 +583,7 @@ public class Chat extends javax.swing.JFrame {
                             BuddyChat bc = new BuddyChat(os, currentUser);
                             bc.setTitle("Chat with " + sender);
                             bc.setVisible(true);
+                            bc.updateDisplay(sender, text);
                             buddiesOpen.put(sender, bc);
                         }
                         break;
@@ -599,6 +599,7 @@ public class Chat extends javax.swing.JFrame {
                         break;                        
                     case 7: // User logon fail: "7 Username"
                         loginFail(un);
+                        break;
                   }
             }
                 
@@ -606,7 +607,7 @@ public class Chat extends javax.swing.JFrame {
     }
     
     private void loginSuccess(String un) {
-               
+        createNewUserBox.hide();       
         JOptionPane.showMessageDialog(this, "You're logged in!",
                 "Logged In", JOptionPane.INFORMATION_MESSAGE);
         loginPanel.hide();
@@ -618,6 +619,16 @@ public class Chat extends javax.swing.JFrame {
     private void loginFail(String un) {
         JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
             "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private void logout() {
+        String logout = "2 "+ currentUser;
+        //new sendToServer().start();
+        try {                    
+            os.writeObject(logout);
+        } catch (Exception ioe) {
+            System.err.println(ioe);
+        }
     }
     
     class sendToServer extends Thread {
@@ -649,6 +660,7 @@ public class Chat extends javax.swing.JFrame {
     private javax.swing.JButton createNewUser;
     private javax.swing.JFrame createNewUserBox;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton login;
@@ -663,7 +675,6 @@ public class Chat extends javax.swing.JFrame {
     private javax.swing.JLabel passwordLabel1;
     private javax.swing.JLabel passwordLabel2;
     private javax.swing.JButton sendMsgButton;
-    private javax.swing.JLabel status;
     private javax.swing.JTextField textBox;
     private javax.swing.JTextField username;
     private javax.swing.JLabel usernameLabel;
