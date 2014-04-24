@@ -104,14 +104,13 @@ public class ThreadedIMServer
               }            
               
           case 2: // Log off
-               // notifyBuddies(un, "off");
-              // usersOn.remove(un);
-              //
+              notifyBuddies(un, "off");
+              usersOn.remove(un);
               break;
           case 3: // Outgoing/Incoming message
               String recipient = s[2];
               String text = s[3];
-              break;
+              return ("3 "+ un + recipient + text);
           case 4: // Buddy off notify
               break;
           

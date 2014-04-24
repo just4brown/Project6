@@ -15,8 +15,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 /**
@@ -28,10 +31,12 @@ public class Chat extends javax.swing.JFrame {
     public String inbox;
     public String outbox;
     ObjectInputStream is;
-    Socket IMServer;// = new Socket(InetAddress.getByName("localhost"), 4225);
-    ObjectOutputStream os; //= new ObjectOutputStream(IMServer.getOutputStream());
-
+    Socket IMServer;
+    ObjectOutputStream os; 
+    public static final Hashtable buddiesOpen = new Hashtable();
     public String msg;
+    DefaultListModel buddiesOnline = new DefaultListModel();
+    String currentUser;
 //    public ThreadedIMServer server;
 //    Socket serverSocket;
 //    ObjectInputStream readServer;
@@ -43,6 +48,7 @@ public class Chat extends javax.swing.JFrame {
     public Chat() {
         initComponents();
         buddylistpanel.hide();
+        jList1.setModel(buddiesOnline);
         
         try {
             IMServer = new Socket(InetAddress.getByName("localhost"), 4225);
@@ -85,6 +91,7 @@ public class Chat extends javax.swing.JFrame {
         login = new javax.swing.JButton();
         status = new javax.swing.JLabel();
         buddylistpanel = new javax.swing.JLayeredPane();
+        logout = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
 
@@ -279,6 +286,13 @@ public class Chat extends javax.swing.JFrame {
 
         status.setText("Welcome");
 
+        logout.setText("Logout");
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
+
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Buddy 1", "Buddy 2", "Buddy 3", "Buddy 4", "Buddy 5" };
             public int getSize() { return strings.length; }
@@ -299,6 +313,11 @@ public class Chat extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(buddylistpanelLayout.createSequentialGroup()
+                    .addGap(70, 70, 70)
+                    .addComponent(logout)
+                    .addContainerGap(70, Short.MAX_VALUE)))
         );
         buddylistpanelLayout.setVerticalGroup(
             buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -306,7 +325,13 @@ public class Chat extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(buddylistpanelLayout.createSequentialGroup()
+                    .addGap(130, 130, 130)
+                    .addComponent(logout)
+                    .addContainerGap(131, Short.MAX_VALUE)))
         );
+        buddylistpanel.setLayer(logout, javax.swing.JLayeredPane.DEFAULT_LAYER);
         buddylistpanel.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -352,7 +377,7 @@ public class Chat extends javax.swing.JFrame {
 
     private void loginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginMouseClicked
         // TODO add your handling code here:
-        status.setText("Button pressed");
+        //status.setText("Button pressed");
     }//GEN-LAST:event_loginMouseClicked
 
     private void createNewUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createNewUserMouseClicked
@@ -364,35 +389,41 @@ public class Chat extends javax.swing.JFrame {
     }//GEN-LAST:event_createNewUserMouseClicked
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        String un = username.getText();
+        currentUser = username.getText();
         String pw = password.getText();
-        outbox = "1 "+ un + " " + pw;
+        outbox = "1 "+ currentUser + " " + pw;
         new sendToServer().start();
         new ListenFromServer().start();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-             
-       //Format:  1 USERNAME PASSWORD
-        try {
-            //Username logged in
-            if (inbox.equals("6 " + un)) {
-                JOptionPane.showMessageDialog(this, "You're logged in!",
-                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
-                loginPanel.hide();
-                buddylistpanel.show();
-            } //Username exists
-            else {
-                //Password is wrong or username doesn't exist
-                    JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception ex) {
-            //Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        }
+        //Debug:
+        
+        buddiesOnline.addElement("Jane Doe");
+        //
+        
+        
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException ex) {
+//            ex.printStackTrace();
+//        }
+//             
+//       //Format:  1 USERNAME PASSWORD
+//        try {
+//            //Username logged in
+//            if (inbox.equals("6 " + un)) {
+//                JOptionPane.showMessageDialog(this, "You're logged in!",
+//                        "Logged In", JOptionPane.INFORMATION_MESSAGE);
+//                loginPanel.hide();
+//                buddylistpanel.show();
+//            } //Username exists
+//            else {
+//                //Password is wrong or username doesn't exist
+//                    JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
+//                            "Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//        } catch (Exception ex) {
+//            //Logger.getLogger(Chat.class.getName()).log(Level.SEVERE, null, ex);
+//            ex.printStackTrace();
+//        }
     }//GEN-LAST:event_loginActionPerformed
 
     private void closeChat(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeChat
@@ -453,14 +484,31 @@ public class Chat extends javax.swing.JFrame {
         // ChatBox CB = new ChatBox("Pete");
         //DialogBox.show();
         //new chatThread().start();
-        BuddyChat bc = new BuddyChat();
-        bc.setVisible(true);
+        String buddyName = (String)jList1.getSelectedValue();
+        if(!buddiesOpen.containsKey(buddyName)) {
+            //BuddyChat bc = new BuddyChat();
+            BuddyChat bc = new BuddyChat(os, currentUser);
+            bc.setTitle("Chat with " + buddyName);
+            bc.setVisible(true);
+            buddiesOpen.put(buddyName, bc);
+        }
 //        ChatBox dialog = new ChatBox(new javax.swing.JFrame(), true);
 //        dialog.updateD("yes");
 //        dialog.setVisible(true);
-        bc.updateD("yes");
+        //bc.updateD("yes");
         
     }//GEN-LAST:event_jList1ValueChanged
+
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+        // TODO add your handling code here:
+        String logout = "2 "+ currentUser;
+        //new sendToServer().start();
+        try {                    
+            os.writeObject(logout);
+        } catch (Exception ioe) {
+            System.err.println(ioe);
+        }
+    }//GEN-LAST:event_logoutActionPerformed
 
     public void startClient() {
         this.setVisible(true);        
@@ -510,13 +558,66 @@ public class Chat extends javax.swing.JFrame {
     class ListenFromServer extends Thread {
         
         public void run() {
+            while(true) {
+                String received = null;
                 try {
-                    inbox = (String) is.readObject();
-                    status.setText(inbox);
+                    //inbox = (String) is.readObject();
+                    received = (String)is.readObject();
+                    status.setText(received);
                 } catch (Exception ioe) {
                     System.err.println(ioe);
                 }
+                
+                String[] s = received.split(" ");
+                int type = Integer.parseInt(s[0]);
+                String un = s[1];
+                switch(type) {
+                    case 3: // Outgoing/Incoming message: "3 SENDER RECIPIENT MESSAGE"
+                        String sender = un;
+                        String text = s[3];
+                        BuddyChat thisBuddy = null;
+                        if(buddiesOpen.containsKey(sender)) {
+                            thisBuddy = (BuddyChat)buddiesOpen.get(sender);
+                            thisBuddy.updateDisplay(sender, text);
+                        }
+                        else {
+                            BuddyChat bc = new BuddyChat(os, currentUser);
+                            bc.setTitle("Chat with " + sender);
+                            bc.setVisible(true);
+                            buddiesOpen.put(sender, bc);
+                        }
+                        break;
+                        
+                    case 4: // Buddy ON notify: "4 Username"
+                        buddiesOnline.addElement(un);
+                        break;
+                    case 5: // Buddy OFF notify: "5 Username"
+                        buddiesOnline.removeElement(un);
+                        break;
+                    case 6: // User logon success: : "6 Username"
+                        loginSuccess(un);
+                        break;                        
+                    case 7: // User logon fail: "7 Username"
+                        loginFail(un);
+                  }
+            }
+                
         }
+    }
+    
+    private void loginSuccess(String un) {
+               
+        JOptionPane.showMessageDialog(this, "You're logged in!",
+                "Logged In", JOptionPane.INFORMATION_MESSAGE);
+        loginPanel.hide();
+        //buddiesOnline.addElement("John Doe");
+        buddylistpanel.show();
+        
+    }
+    
+    private void loginFail(String un) {
+        JOptionPane.showMessageDialog(this, "Incorrect Username or Password.",
+            "Error", JOptionPane.ERROR_MESSAGE);
     }
     
     class sendToServer extends Thread {
@@ -552,6 +653,7 @@ public class Chat extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton login;
     private javax.swing.JLayeredPane loginPanel;
+    private javax.swing.JButton logout;
     private javax.swing.JScrollPane messageFeed;
     private javax.swing.JPasswordField newPassword1;
     private javax.swing.JPasswordField newPassword2;

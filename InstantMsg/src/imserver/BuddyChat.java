@@ -6,6 +6,8 @@
 
 package imserver;
 
+import java.io.ObjectOutputStream;
+
 /**
  *
  * @author pioni_000
@@ -15,8 +17,17 @@ public class BuddyChat extends javax.swing.JFrame {
     /**
      * Creates new form BuddyChat
      */
+    ObjectOutputStream os; 
+    String currentUser;
+    
     public BuddyChat() {
         initComponents();
+    }
+    
+    public BuddyChat(ObjectOutputStream o, String user) {
+        initComponents();
+        os = o;
+        currentUser = user;
     }
 
     /**
@@ -39,6 +50,11 @@ public class BuddyChat extends javax.swing.JFrame {
         jScrollPane1.setViewportView(msgDisplay);
 
         sendMsgButton.setText("Send");
+        sendMsgButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendMsgButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -68,6 +84,21 @@ public class BuddyChat extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void sendMsgButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendMsgButtonActionPerformed
+        // TODO add your handling code here:
+        String message = textBox.getText();
+        textBox.setText("");
+        msgDisplay.append("\n" + "Me" + ": " + message);
+        String recipient = this.getTitle().substring(10); //chat with 
+        String toSend = "3 " + currentUser + recipient + message;
+        try {                    
+            os.writeObject(toSend);
+        } catch (Exception ioe) {
+            System.err.println(ioe);
+        }
+        
+    }//GEN-LAST:event_sendMsgButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -104,9 +135,9 @@ public class BuddyChat extends javax.swing.JFrame {
         });
     }
     
-    public void updateD(String msg) {
-        msgDisplay.append("Me: Great program");
-        msgDisplay.append("\nPete: Yeah, it's awesome");
+    public void updateDisplay(String sender, String msg) {
+        msgDisplay.append("\n" + sender + ": " + msg);
+        //msgDisplay.append("\nPete: Yeah, it's awesome");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
