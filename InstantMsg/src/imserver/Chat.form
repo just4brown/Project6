@@ -25,11 +25,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="messageFeed" min="-2" pref="197" max="-2" attributes="0"/>
+                  <Component id="messageFeed" pref="244" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="sendButton" pref="28" max="32767" attributes="0"/>
                       <Component id="textBox" max="32767" attributes="0"/>
-                      <Component id="sendButton" pref="75" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
