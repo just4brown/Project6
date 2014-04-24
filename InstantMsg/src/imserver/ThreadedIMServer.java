@@ -131,7 +131,10 @@ public class ThreadedIMServer
               break;
           case 3: // Outgoing/Incoming message
               String recipient = s[2];
-              String text = s[3];
+              String text = "";
+                for(int i=3;i<s.length;i++) {
+                    text += (s[i] + " ");
+                }
               ObjectOutputStream rec = (ObjectOutputStream)usersOn.get(recipient);
               rec.writeObject("3 "+ un + " " + recipient + " " + text);
               break;

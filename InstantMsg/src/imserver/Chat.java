@@ -294,6 +294,8 @@ public class Chat extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        jList1.setMaximumSize(new java.awt.Dimension(41, 10));
+        jList1.setPreferredSize(new java.awt.Dimension(41, 10));
         jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 jList1ValueChanged(evt);
@@ -314,20 +316,19 @@ public class Chat extends javax.swing.JFrame {
         buddylistpanel.setLayout(buddylistpanelLayout);
         buddylistpanelLayout.setHorizontalGroup(
             buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buddylistpanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(logout)
+                .addGap(58, 58, 58))
             .addGroup(buddylistpanelLayout.createSequentialGroup()
                 .addGroup(buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(buddylistpanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1))
-                    .addGroup(buddylistpanelLayout.createSequentialGroup()
                         .addGap(74, 74, 74)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buddylistpanelLayout.createSequentialGroup()
-                .addGap(0, 61, Short.MAX_VALUE)
-                .addComponent(logout)
-                .addGap(58, 58, 58))
+                        .addComponent(jLabel1))
+                    .addGroup(buddylistpanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         buddylistpanelLayout.setVerticalGroup(
             buddylistpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,11 +357,11 @@ public class Chat extends javax.swing.JFrame {
                         .addComponent(closeChat))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(loginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 31, Short.MAX_VALUE))))
+                        .addGap(0, 42, Short.MAX_VALUE))))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(52, Short.MAX_VALUE)
-                    .addComponent(buddylistpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()
+                    .addComponent(buddylistpanel)
                     .addContainerGap()))
         );
         layout.setVerticalGroup(
@@ -470,6 +471,9 @@ public class Chat extends javax.swing.JFrame {
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
         // TODO add your handling code here:
         logout();
+        buddylistpanel.hide();
+        loginPanel.show();
+
     }//GEN-LAST:event_logoutActionPerformed
 
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
@@ -540,7 +544,10 @@ public class Chat extends javax.swing.JFrame {
                 switch(type) {
                     case 3: // Outgoing/Incoming message: "3 SENDER RECIPIENT MESSAGE"
                         String sender = un;
-                        String text = s[3];
+                        String text = "";
+                        for(int i=3;i<s.length;i++) {
+                            text += (s[i] + " ");
+                        }
                         BuddyChat thisBuddy = null;
                         if(buddiesOpen.containsKey(sender)) {
                             thisBuddy = (BuddyChat)buddiesOpen.get(sender);
@@ -560,6 +567,8 @@ public class Chat extends javax.swing.JFrame {
                         break;
                     case 5: // Buddy OFF notify: "5 Username"
                         buddiesOnline.removeElement(un);
+                        //BuddyChat bc = (BuddyChat)buddiesOpen.get(un);
+                        //bc.updateDisplay(un, "USER HAS LOGGED OFF");
                         break;
                     case 6: // User logon success: : "6 Username"
                         loginSuccess(un);
