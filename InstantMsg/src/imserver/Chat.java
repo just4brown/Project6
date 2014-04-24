@@ -265,7 +265,7 @@ public class Chat extends javax.swing.JFrame {
         status.setVerifyInputWhenFocusTarget(false);
 
         list.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Buddy 1", "Buddy 2", "Buddy 3", "Buddy 4", "Buddy 5" };
+            String[] strings = { "bStatus   BuddyName" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -470,7 +470,6 @@ public class Chat extends javax.swing.JFrame {
     class sendToServer extends Thread {
 
         public void run() {
-            //while(true) {
             try {
 
                 os.writeObject(outbox);
@@ -481,16 +480,11 @@ public class Chat extends javax.swing.JFrame {
                 String msg = (String) sInput.readObject();
                 status.setText(msg);
 
-                //            Send login info to server from here
-                //            Recall:
-                //            1  - LOGON 
-                //            From client to server
-                //            Format:  1 USERNAME PASSWORD
-                //            Example: 1 mzimmerm qaz123
+                //1  - LOGON 
+                //Format:  1 USERNAME PASSWORD
             } catch (Exception ioe) {
                 System.err.println(ioe);
             }
-            //}
         }
     }
 

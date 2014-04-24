@@ -107,21 +107,29 @@ public class ThreadedIMServer
               }            
               
           case 2: // Log off
-               // notifyBuddies(un, "off");
-              // usersOn.remove(un);
-              //
-              response = "not ready";
+              notifyBuddies(un, "off");
+              usersOn.remove(un);
+              response = "null";
               break;
           case 3: // Outgoing/Incoming message
+              String sender = s[1];
               String recipient = s[2];
               String text = s[3];
-              response = "not ready";
-              break;
-          case 4: // Buddy off notify
-              response = "not ready";
-              break;
-          
-          
+              
+              //Format:  3 SENDER RECIPIENT MESSAGE
+              if(usersOn.containsKey(recipient)){
+                  ObjectOutputStream temp = (ObjectOutputStream)usersOn.get(recipient);
+                  temp.writeObject(msg);
+                  response = sender + ": " + text;
+                  break;
+              }
+              else{
+                 response = 3 + " Server: This user is offline.";
+                 break;
+              }
+          default: //Other coes are server->client
+              response =  "";
+              break;          
          
       }
       return response; 
